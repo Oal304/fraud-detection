@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Login - VeriLoan{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-shield me-2"></i>
+                    Admin Access
+                </h4>
+                <p class="text-muted small mb-0 mt-2">VeriLoan Fraud Detection System</p>
+            </div>
+            <div class="card-body">
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">
+                            <i class="fas fa-user me-1"></i>Username
+                        </label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="id_username" 
+                               name="username" 
+                               value="{{ form.username.value|default:'' }}"
+                               required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label">
+                            <i class="fas fa-lock me-1"></i>Password
+                        </label>
+                        <input type="password" 
+                               class="form-control" 
+                               id="id_password" 
+                               name="password" 
+                               required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Login to Dashboard
+                    </button>
+                </form>
+
+                <div class="text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Authorized personnel only
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="{% url 'fraud_detection:loan_form_home' %}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-1"></i>
+                Back to Loan Application
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 20px;
+}
+
+.card-header {
+    border-radius: 20px 20px 0 0 !important;
+}
+
+.form-control {
+    border-radius: 10px;
+    padding: 12px 15px;
+}
+
+.btn {
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 500;
+}
+
+.card-body {
+    padding: 2rem;
+}
+</style>
+{% endblock %}

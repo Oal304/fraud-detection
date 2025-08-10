@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Application Submitted - VeriLoan{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="text-center mb-5">
+            <i class="fas fa-check-circle fa-5x text-success mb-3"></i>
+            <h1 class="display-4 mb-3">Application Submitted!</h1>
+            <p class="lead text-muted">Thank you for choosing VeriLoan. Your application is being processed.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-clock fa-3x text-info mb-3"></i>
+                        <h5>What's Next?</h5>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success me-2"></i>Application review (24-48 hours)</li>
+                            <li><i class="fas fa-phone text-info me-2"></i>Verification call if needed</li>
+                            <li><i class="fas fa-envelope text-warning me-2"></i>Email notification with decision</li>
+                            <li><i class="fas fa-money-bill-wave text-success me-2"></i>Loan disbursement (if approved)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-headset fa-3x text-warning mb-3"></i>
+                        <h5>Need Help?</h5>
+                        <div class="text-start">
+                            <p><strong>Call Us:</strong><br>
+                            <a href="tel:+2348000000000">+234 800 000 0000</a></p>
+                            
+                            <p><strong>Email:</strong><br>
+                            <a href="mailto:support@veriloan.com">support@veriloan.com</a></p>
+                            
+                            <p><strong>Business Hours:</strong><br>
+                            Mon-Fri: 9AM - 6PM WAT<br>
+                            Sat: 10AM - 2PM WAT</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h6 class="mb-1"><i class="fas fa-shield-alt me-2"></i>Your Data is Secure</h6>
+                            <small>Your application was processed using advanced AI fraud detection and your personal information is encrypted and protected.</small>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <span class="badge bg-success fs-6">
+                                <i class="fas fa-check-circle me-1"></i>Verified Secure
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'fraud_detection:loan_form_home' %}" class="btn btn-primary btn-lg me-3">
+                <i class="fas fa-plus me-2"></i>Submit Another Application
+            </a>
+            <button type="button" class="btn btn-outline-primary btn-lg" onclick="window.print()">
+                <i class="fas fa-print me-2"></i>Print Confirmation
+            </button>
+        </div>
+
+        <!-- Application Reference -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h6>Application Reference</h6>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <code class="fs-5" id="app-reference">VL-{{ reference_number|default:"PROCESSING" }}</code>
+                            <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyReference()" title="Copy Reference">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <small class="text-muted">Please save this reference number for your records</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyReference() {
+    const refText = document.getElementById('app-reference').textContent;
+    navigator.clipboard.writeText(refText).then(function() {
+        // Show success message
+        const btn = event.target.closest('button');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        btn.classList.add('btn-success');
+        btn.classList.remove('btn-outline-secondary');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-outline-secondary');
+        }, 2000);
+    });
+}
+</script>
+{% endblock %}

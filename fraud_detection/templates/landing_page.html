@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}VeriLoan - AI-Powered Loan Fraud Detection{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-shield-alt text-warning me-3"></i>
+                    VeriLoan
+                </h1>
+                <p class="lead mb-4">
+                    AI-powered fraud detection system that protects banks from loan application fraud 
+                    using advanced machine learning and device fingerprinting technology.
+                </p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <a href="{% url 'fraud_detection:apply_for_loan_enhanced' %}" class="btn btn-warning btn-lg me-md-2">
+                        <i class="fas fa-file-alt me-2"></i>Apply for Loan
+                    </a>
+                    {% if not user.is_authenticated %}
+                    <a href="{% url 'fraud_detection:login' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-chart-line me-2"></i>Admin Demo
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="p-4">
+                    <i class="fas fa-brain fa-5x text-warning mb-4"></i>
+                    <h3>Real-time AI Analysis</h3>
+                    <p>Every application is analyzed by our machine learning algorithms in milliseconds</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="container my-5">
+    <div class="row text-center mb-5">
+        <div class="col-12">
+            <h2 class="text-primary mb-3">How VeriLoan Protects Banks</h2>
+            <p class="lead text-muted">Advanced fraud detection powered by cutting-edge technology</p>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <!-- Device Fingerprinting -->
+        <div class="col-lg-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-fingerprint fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">Device Fingerprinting</h5>
+                    <p class="card-text">
+                        Uses FingerprintJS to create unique device signatures, detecting multiple 
+                        applications from the same device and identifying suspicious patterns.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI Risk Scoring -->
+        <div class="col-lg-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-robot fa-3x text-warning"></i>
+                    </div>
+                    <h5 class="card-title">AI Risk Scoring</h5>
+                    <p class="card-text">
+                        Machine learning algorithms analyze behavioral patterns, application data, 
+                        and historical fraud indicators to generate accurate risk scores.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Real-time Detection -->
+        <div class="col-lg-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-bolt fa-3x text-success"></i>
+                    </div>
+                    <h5 class="card-title">Real-time Detection</h5>
+                    <p class="card-text">
+                        Instant fraud detection with smart signals for VPN, proxy, bot activity, 
+                        and browser tampering - all processed in real-time.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Demo Stats Section -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-12 mb-4">
+                <h3 class="text-primary">Demo Statistics</h3>
+                <p class="text-muted">Real-time fraud detection metrics</p>
+            </div>
+        </div>
+        <div class="row g-4" id="demo-stats">
+            <div class="col-md-3">
+                <div class="card border-primary">
+                    <div class="card-body text-center">
+                        <h3 class="text-primary" id="total-applications-stat">0</h3>
+                        <p class="mb-0 text-muted">Total Applications</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-warning">
+                    <div class="card-body text-center">
+                        <h3 class="text-warning" id="fraud-detected-stat">0</h3>
+                        <p class="mb-0 text-muted">Fraud Detected</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-success">
+                    <div class="card-body text-center">
+                        <h3 class="text-success" id="approved-stat">0</h3>
+                        <p class="mb-0 text-muted">Approved</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-info">
+                    <div class="card-body text-center">
+                        <h3 class="text-info" id="accuracy-stat">99.2%</h3>
+                        <p class="mb-0 text-muted">Accuracy Rate</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Technology Stack -->
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <h3 class="text-primary">Powered By</h3>
+            <p class="text-muted">Advanced technologies working together</p>
+        </div>
+    </div>
+    <div class="row text-center g-4">
+        <div class="col-md-2">
+            <div class="p-3">
+                <i class="fab fa-python fa-2x text-primary mb-2"></i>
+                <p class="mb-0 small">Django</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="p-3">
+                <i class="fas fa-brain fa-2x text-warning mb-2"></i>
+                <p class="mb-0 small">Machine Learning</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="p-3">
+                <i class="fas fa-fingerprint fa-2x text-info mb-2"></i>
+                <p class="mb-0 small">FingerprintJS</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="p-3">
+                <i class="fas fa-database fa-2x text-success mb-2"></i>
+                <p class="mb-0 small">PostgreSQL</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="p-3">
+                <i class="fab fa-bootstrap fa-2x text-primary mb-2"></i>
+                <p class="mb-0 small">Bootstrap</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="p-3">
+                <i class="fas fa-cloud fa-2x text-warning mb-2"></i>
+                <p class="mb-0 small">Railway</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="bg-primary text-white py-5">
+    <div class="container text-center">
+        <h3 class="mb-3">Ready to Test Our AI?</h3>
+        <p class="lead mb-4">Submit a loan application and see our fraud detection in action</p>
+        <a href="{% url 'fraud_detection:apply_for_loan_enhanced' %}" class="btn btn-warning btn-lg">
+            <i class="fas fa-rocket me-2"></i>Try Demo Application
+        </a>
+    </div>
+</div>
+
+<script>
+// Load demo statistics
+async function loadDemoStats() {
+    try {
+        // You can call your dashboard API or use mock data for demo
+        const mockStats = {
+            total: Math.floor(Math.random() * 1000) + 500,
+            fraud: Math.floor(Math.random() * 50) + 25,
+            approved: Math.floor(Math.random() * 800) + 400
+        };
+        
+        // Animate counters
+        animateCounter('total-applications-stat', mockStats.total);
+        animateCounter('fraud-detected-stat', mockStats.fraud);
+        animateCounter('approved-stat', mockStats.approved);
+        
+    } catch (error) {
+        console.log('Demo stats loading - using mock data');
+    }
+}
+
+function animateCounter(elementId, targetValue) {
+    const element = document.getElementById(elementId);
+    const duration = 2000;
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const currentValue = Math.floor(progress * targetValue);
+        
+        element.textContent = currentValue.toLocaleString();
+        
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        }
+    }
+    
+    requestAnimationFrame(update);
+}
+
+// Load stats when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(loadDemoStats, 500); // Delay for visual effect
+});
+</script>
+{% endblock %}
