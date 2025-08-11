@@ -84,6 +84,12 @@ TEMPLATES = [
     },
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://fraud-detection-production-11c8.up.railway.app",
+    "http://127.0.0.1:8000/"
+]
+
+
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGIN_URL = '/login/'
 
