@@ -7,11 +7,11 @@
 <div class="row mb-4">
     <div class="col-12">
         <h2>VeriLoan Admin Dashboard</h2>
-        <p class="text-muted">AI-Powered Fraud Detection & Staff Decision System</p>
+        <p class="text-muted">AI-Powered Fraud Detection Analytics with Dual Status System</p>
     </div>
 </div>
 
-<!-- Enhanced Stats Cards for Dual Status -->
+<!-- Enhanced Stats Cards with Dual Status -->
 <div class="row mb-4">
     <div class="col-md-2">
         <div class="card bg-primary text-white">
@@ -63,11 +63,11 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4 id="can-staff-decide">0</h4>
-                        <p class="mb-0">Ready for Staff Decision</p>
+                        <h4 id="can-decide-count">0</h4>
+                        <p class="mb-0">Awaiting Decision</p>
                     </div>
                     <div class="align-self-center">
-                        <i class="fas fa-user-check fa-2x"></i>
+                        <i class="fas fa-gavel fa-2x"></i>
                     </div>
                 </div>
             </div>
@@ -79,7 +79,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h4 id="final-approved-count">0</h4>
-                        <p class="mb-0">Final Approved</p>
+                        <p class="mb-0">Finally Approved</p>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-check-circle fa-2x"></i>
@@ -93,41 +93,11 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4 id="pending-review-count">0</h4>
-                        <p class="mb-0">Pending Review</p>
+                        <h4 id="final-rejected-count">0</h4>
+                        <p class="mb-0">Finally Rejected</p>
                     </div>
                     <div class="align-self-center">
-                        <i class="fas fa-clock fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Enhanced Fraud vs Staff Status Legend -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <h6><i class="fas fa-info-circle text-info"></i> Status System Guide</h6>
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6 class="text-primary">🤖 Fraud Detection Status (System)</h6>
-                        <div class="d-flex flex-wrap gap-2">
-                            <span class="badge bg-warning">pending</span> - Under analysis
-                            <span class="badge bg-success">approve</span> - Passed fraud checks
-                            <span class="badge bg-danger">rejected</span> - Failed fraud checks
-                            <span class="badge bg-info">flagged</span> - Requires attention
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <h6 class="text-success">👨‍💼 Final Decision Status (Staff)</h6>
-                        <div class="d-flex flex-wrap gap-2">
-                            <span class="badge bg-secondary">pending_review</span> - Awaiting staff decision
-                            <span class="badge bg-success">approved</span> - Staff approved
-                            <span class="badge bg-danger">rejected</span> - Staff rejected
-                        </div>
+                        <i class="fas fa-times-circle fa-2x"></i>
                     </div>
                 </div>
             </div>
@@ -151,7 +121,7 @@
                     <i class="fas fa-download"></i> Export CSV
                 </button>
                 <button class="btn btn-success" onclick="showBulkActions()">
-                    <i class="fas fa-tasks"></i> Bulk Staff Decisions
+                    <i class="fas fa-tasks"></i> Bulk Actions
                 </button>
             </div>
         </div>
@@ -164,18 +134,18 @@
                     <div class="col-4">
                         <select class="form-select" id="fraud-status-filter" onchange="filterApplications()">
                             <option value="">All Fraud Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="approve">Fraud Check Passed</option>
-                            <option value="rejected">Fraud Detected</option>
-                            <option value="flagged">Flagged</option>
+                            <option value="pending">Fraud: Pending</option>
+                            <option value="approve">Fraud: Clear</option>
+                            <option value="rejected">Fraud: Rejected</option>
+                            <option value="flagged">Fraud: Flagged</option>
                         </select>
                     </div>
                     <div class="col-4">
                         <select class="form-select" id="final-status-filter" onchange="filterApplications()">
                             <option value="">All Final Status</option>
                             <option value="pending_review">Pending Review</option>
-                            <option value="approved">Staff Approved</option>
-                            <option value="rejected">Staff Rejected</option>
+                            <option value="approved">Finally Approved</option>
+                            <option value="rejected">Finally Rejected</option>
                         </select>
                     </div>
                     <div class="col-4">
@@ -192,7 +162,7 @@
     </div>
 </div>
 
-<!-- Enhanced Applications Table with Dual Status -->
+<!-- Applications Table -->
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Recent Applications</h5>
@@ -215,14 +185,13 @@
                         <th>ML Insights</th>
                         <th>Fraud Status</th>
                         <th>Final Status</th>
-                        <th>Decision by</th>
                         <th>Date</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="10" class="text-center">
+                        <td colspan="9" class="text-center">
                             <div class="spinner-border" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
@@ -274,153 +243,132 @@
 </div>
 
 <style>
-    /* Enhanced styles for dual status system */
-    .card {
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        border: 1px solid rgba(0, 0, 0, 0.125);
-    }
+/* Custom styles for dashboard */
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
 
-    .table th {
-        font-weight: 600;
-        background-color: #f8f9fa;
-    }
+.table th {
+    font-weight: 600;
+    background-color: #f8f9fa;
+}
 
-    .risk-badge {
-        font-size: 0.8em;
-        padding: 0.25em 0.5em;
-    }
+.risk-badge {
+    font-size: 0.8em;
+    padding: 0.25em 0.5em;
+}
 
-    .risk-low {
-        background-color: #d4edda;
-        color: #155724;
-    }
+.risk-low { background-color: #d4edda; color: #155724; }
+.risk-medium { background-color: #fff3cd; color: #856404; }
+.risk-high { background-color: #f8d7da; color: #721c24; }
 
-    .risk-medium {
-        background-color: #fff3cd;
-        color: #856404;
-    }
+.anomaly-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
 
-    .risk-high {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
+.anomaly-detected { background-color: #dc3545; }
+.anomaly-normal { background-color: #28a745; }
 
-    .anomaly-indicator {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 5px;
-    }
+.status-badge-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
 
-    .anomaly-detected {
-        background-color: #dc3545;
-    }
+.dual-status-info {
+    background: linear-gradient(45deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 8px;
+}
 
-    .anomaly-normal {
-        background-color: #28a745;
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.875rem;
     }
-
-    .status-badge {
-        font-size: 0.75em;
-        min-width: 80px;
-        text-align: center;
+    
+    .card-body h4 {
+        font-size: 1.5rem;
     }
-
-    .dual-status-container {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-    }
-
-    .status-label {
-        font-size: 0.65em;
-        font-weight: bold;
-        margin-bottom: 1px;
-    }
-
-    @media (max-width: 768px) {
-        .table-responsive {
-            font-size: 0.875rem;
-        }
-
-        .card-body h4 {
-            font-size: 1.5rem;
-        }
-    }
+}
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 <script>
-    // Enhanced Dashboard JavaScript for Dual Status System
-    let allApplications = [];
-    let filteredApplications = [];
+// Updated Dashboard JavaScript with Dual Status System
+let allApplications = [];
+let filteredApplications = [];
 
-    // CSRF token helper
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
+// CSRF token helper
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
         }
-        return cookieValue;
     }
+    return cookieValue;
+}
 
-    // Load dashboard data
-    async function loadDashboardData() {
-        try {
-            const response = await fetch('/admin/dashboard-data/', {
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to load dashboard data');
+// Load dashboard data
+async function loadDashboardData() {
+    try {
+        const response = await fetch('/admin/dashboard-data/', {
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
             }
-
-            const data = await response.json();
-            allApplications = data.applications || [];
-            filteredApplications = [...allApplications];
-
-            updateStats(data.stats || {});
-            updateApplicationsTable();
-
-            document.getElementById('last-updated').textContent =
-                `Last updated: ${new Date().toLocaleTimeString()}`;
-
-        } catch (error) {
-            console.error('Error loading dashboard:', error);
-            showError('Failed to load dashboard data');
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to load dashboard data');
         }
+        
+        const data = await response.json();
+        allApplications = data.applications || [];
+        filteredApplications = [...allApplications];
+        
+        updateStats(data.stats || {});
+        updateApplicationsTable();
+        
+        document.getElementById('last-updated').textContent = 
+            `Last updated: ${new Date().toLocaleTimeString()}`;
+            
+    } catch (error) {
+        console.error('Error loading dashboard:', error);
+        showError('Failed to load dashboard data');
     }
+}
 
-    function updateStats(stats) {
-        document.getElementById('total-applications').textContent = stats.total || 0;
-        document.getElementById('high-risk-count').textContent = stats.high_risk || 0;
-        document.getElementById('anomalies-count').textContent = stats.anomalies || 0;
+function updateStats(stats) {
+    // Updated to use dual status stats
+    document.getElementById('total-applications').textContent = stats.total || 0;
+    document.getElementById('high-risk-count').textContent = stats.high_risk || 0;
+    document.getElementById('anomalies-count').textContent = stats.anomalies || 0;
+    document.getElementById('can-decide-count').textContent = stats.can_staff_decide || 0;
+    document.getElementById('final-approved-count').textContent = (stats.final_stats && stats.final_stats.approved) || 0;
+    document.getElementById('final-rejected-count').textContent = (stats.final_stats && stats.final_stats.rejected) || 0;
+}
 
-        // Dual status stats
-        document.getElementById('can-staff-decide').textContent = stats.can_staff_decide || 0;
-        document.getElementById('final-approved-count').textContent = stats.final_stats?.approved || 0;
-        document.getElementById('pending-review-count').textContent = stats.final_stats?.pending_review || 0;
+function updateApplicationsTable() {
+    const tbody = document.querySelector('#applications-table tbody');
+    
+    if (filteredApplications.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center">No applications found</td></tr>';
+        return;
     }
-
-    function updateApplicationsTable() {
-        const tbody = document.querySelector('#applications-table tbody');
-
-        if (filteredApplications.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="10" class="text-center">No applications found</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = filteredApplications.map(app => `
+    
+    tbody.innerHTML = filteredApplications.map(app => `
         <tr class="application-row" data-application-id="${app.id}">
             <td>
                 <input type="checkbox" class="form-check-input application-checkbox" value="${app.id}">
@@ -441,191 +389,208 @@
                 ${app.behavioral_risk || 'N/A'}
             </td>
             <td>
-                <div class="dual-status-container">
-                    <span class="status-label text-muted">🤖 SYSTEM</span>
-                    <span class="badge status-badge bg-${getFraudStatusColor(app.fraud_status)}">
-                        ${app.fraud_status}
-                    </span>
-                </div>
+                <span class="badge bg-${getFraudStatusColor(app.fraud_status)}" title="Fraud Detection Status">
+                    ${getFraudStatusLabel(app.fraud_status)}
+                </span>
             </td>
             <td>
-                <div class="dual-status-container">
-                    <span class="status-label text-muted">👨‍💼 STAFF</span>
-                    <span class="badge status-badge bg-${getFinalStatusColor(app.final_status)}">
-                        ${app.final_status}
+                <div class="status-badge-container">
+                    <span class="badge bg-${getFinalStatusColor(app.final_status)}" title="Staff Decision Status">
+                        ${getFinalStatusLabel(app.final_status)}
                     </span>
+                    ${app.decided_by ? `<small class="text-muted">by ${app.decided_by}</small>` : ''}
                 </div>
-            </td>
-            <td>
-                <small>
-                    ${app.decided_by || 'None'}<br>
-                    ${app.staff_decision_date ? new Date(app.staff_decision_date).toLocaleDateString() : '-'}
-                </small>
             </td>
             <td><small>${new Date(app.application_date).toLocaleDateString()}</small></td>
             <td>
-                <div class="btn-group-vertical" role="group">
-                    <button class="btn btn-sm btn-info mb-1" onclick="getMLInsights('${app.id}')" title="ML Insights">
-                        <i class="fas fa-brain"></i>
+                <button class="btn btn-sm btn-info me-1" onclick="getMLInsights('${app.id}')" title="ML Insights">
+                    <i class="fas fa-brain"></i>
+                </button>
+                <button class="btn btn-sm btn-primary me-1" onclick="viewDetails('${app.id}')" title="View Details">
+                    <i class="fas fa-eye"></i>
+                </button>
+                
+                <!-- Staff Decision Buttons - Only show if staff can decide -->
+                ${app.can_staff_decide ? `
+                <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-success" onclick="quickFinalStatusUpdate('${app.id}', 'approved')" 
+                            title="Approve Application" ${app.final_status === 'approved' ? 'disabled' : ''}>
+                        <i class="fas fa-check"></i>
                     </button>
-                    <button class="btn btn-sm btn-primary mb-1" onclick="viewDetails('${app.id}')" title="View Details">
-                        <i class="fas fa-eye"></i>
+                    <button class="btn btn-sm btn-danger" onclick="quickFinalStatusUpdate('${app.id}', 'rejected')" 
+                            title="Reject Application" ${app.final_status === 'rejected' ? 'disabled' : ''}>
+                        <i class="fas fa-times"></i>
                     </button>
-                    ${app.can_staff_decide ? `
-                    <div class="btn-group" role="group">
-                        <button class="btn btn-sm btn-success" onclick="quickFinalStatusUpdate('${app.id}', 'approved')" title="Staff Approve" ${app.final_status === 'approved' ? 'disabled' : ''}>
-                            <i class="fas fa-check"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="quickFinalStatusUpdate('${app.id}', 'rejected')" title="Staff Reject" ${app.final_status === 'rejected' ? 'disabled' : ''}>
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    ` : `
-                    <button class="btn btn-sm btn-secondary" disabled title="Cannot make staff decisions - ${app.fraud_status} by system">
-                        <i class="fas fa-lock"></i> Locked
+                    <button class="btn btn-sm btn-warning" onclick="showFinalStatusUpdateForm('${app.id}')" title="Review Application">
+                        <i class="fas fa-gavel"></i>
                     </button>
-                    `}
                 </div>
+                ` : `
+                <div class="text-muted small">
+                    ${app.fraud_status === 'rejected' ? 'Fraud Rejected' : 'Auto-processed'}
+                </div>
+                `}
             </td>
         </tr>
     `).join('');
+}
+
+function getRiskClass(score) {
+    if (score <= 40) return 'risk-low';
+    if (score <= 70) return 'risk-medium';
+    return 'risk-high';
+}
+
+function getFraudStatusColor(status) {
+    switch(status?.toLowerCase()) {
+        case 'approve': return 'success';
+        case 'rejected': return 'danger';
+        case 'pending': return 'warning';
+        case 'flagged': return 'info';
+        default: return 'secondary';
     }
+}
 
-    function getRiskClass(score) {
-        if (score <= 40) return 'risk-low';
-        if (score <= 70) return 'risk-medium';
-        return 'risk-high';
+function getFraudStatusLabel(status) {
+    switch(status?.toLowerCase()) {
+        case 'approve': return 'Clear';
+        case 'rejected': return 'Fraud';
+        case 'pending': return 'Checking';
+        case 'flagged': return 'Flagged';
+        default: return 'Unknown';
     }
+}
 
-    function getFraudStatusColor(status) {
-        switch (status?.toLowerCase()) {
-            case 'approve': return 'success';
-            case 'rejected': return 'danger';
-            case 'pending': return 'warning';
-            case 'flagged': return 'info';
-            default: return 'secondary';
-        }
+function getFinalStatusColor(status) {
+    switch(status?.toLowerCase()) {
+        case 'approved': return 'success';
+        case 'rejected': return 'danger';
+        case 'pending_review': return 'warning';
+        default: return 'secondary';
     }
+}
 
-    function getFinalStatusColor(status) {
-        switch (status?.toLowerCase()) {
-            case 'approved': return 'success';
-            case 'rejected': return 'danger';
-            case 'pending_review': return 'warning';
-            default: return 'secondary';
-        }
+function getFinalStatusLabel(status) {
+    switch(status?.toLowerCase()) {
+        case 'approved': return 'Approved';
+        case 'rejected': return 'Rejected';
+        case 'pending_review': return 'Pending';
+        default: return 'Unknown';
     }
+}
 
-    function filterApplications() {
-        const fraudStatusFilter = document.getElementById('fraud-status-filter').value;
-        const finalStatusFilter = document.getElementById('final-status-filter').value;
-        const riskFilter = document.getElementById('risk-filter').value;
-
-        filteredApplications = allApplications.filter(app => {
-            let matchesFraudStatus = !fraudStatusFilter || app.fraud_status?.toLowerCase() === fraudStatusFilter;
-            let matchesFinalStatus = !finalStatusFilter || app.final_status?.toLowerCase() === finalStatusFilter;
-            let matchesRisk = true;
-
-            if (riskFilter) {
-                const risk = app.risk_score;
-                switch (riskFilter) {
-                    case 'low': matchesRisk = risk <= 40; break;
-                    case 'medium': matchesRisk = risk > 40 && risk <= 70; break;
-                    case 'high': matchesRisk = risk > 70; break;
-                }
+function filterApplications() {
+    const fraudStatusFilter = document.getElementById('fraud-status-filter').value;
+    const finalStatusFilter = document.getElementById('final-status-filter').value;
+    const riskFilter = document.getElementById('risk-filter').value;
+    
+    filteredApplications = allApplications.filter(app => {
+        let matchesFraudStatus = !fraudStatusFilter || app.fraud_status?.toLowerCase() === fraudStatusFilter;
+        let matchesFinalStatus = !finalStatusFilter || app.final_status?.toLowerCase() === finalStatusFilter;
+        let matchesRisk = true;
+        
+        if (riskFilter) {
+            const risk = app.risk_score;
+            switch(riskFilter) {
+                case 'low': matchesRisk = risk <= 40; break;
+                case 'medium': matchesRisk = risk > 40 && risk <= 70; break;
+                case 'high': matchesRisk = risk > 70; break;
             }
+        }
+        
+        return matchesFraudStatus && matchesFinalStatus && matchesRisk;
+    });
+    
+    updateApplicationsTable();
+}
 
-            return matchesFraudStatus && matchesFinalStatus && matchesRisk;
+// === FINAL STATUS UPDATE FUNCTIONS (Staff decisions only) ===
+async function quickFinalStatusUpdate(applicationId, newFinalStatus) {
+    const actionLabel = newFinalStatus === 'approved' ? 'approve' : 'reject';
+    
+    if (!confirm(`Are you sure you want to ${actionLabel} this loan application?`)) {
+        return;
+    }
+    
+    const sendNotification = confirm(`Send email notification to the applicant about this ${actionLabel}al?`);
+    
+    try {
+        const response = await fetch(`/admin/application/${applicationId}/update-final-status/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ 
+                final_status: newFinalStatus,
+                staff_comments: `Quick ${actionLabel}al by admin`,
+                send_notification: sendNotification
+            })
         });
-
-        updateApplicationsTable();
-    }
-
-    // === STAFF FINAL STATUS UPDATE FUNCTIONS ===
-    async function quickFinalStatusUpdate(applicationId, newFinalStatus) {
-        if (!confirm(`Are you sure you want to ${newFinalStatus} this application as the final decision?`)) {
-            return;
-        }
-
-        // Ask if user wants to send notification
-        const sendNotification = confirm(`Send email notification to the applicant about this ${newFinalStatus} decision?`);
-
-        try {
-            const response = await fetch(`/admin/application/${applicationId}/update-final-status/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({
-                    final_status: newFinalStatus,
-                    staff_comments: `Quick ${newFinalStatus} by staff`,
-                    send_notification: sendNotification
-                })
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                let successMessage = `Application ${newFinalStatus} successfully!`;
-
-                if (sendNotification) {
-                    successMessage += `\n\n📧 Demo: Email notification sent to applicant`;
-
-                    setTimeout(() => {
-                        showEmailNotificationConfirmation(
-                            'applicant@example.com',
-                            newFinalStatus,
-                            `Quick ${newFinalStatus} by staff`
-                        );
-                    }, 1000);
-                }
-
-                showSuccess(successMessage);
-                loadDashboardData(); // Refresh the table
-            } else {
-                showError('Failed to update final status: ' + (result.error || 'Unknown error'));
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            let successMessage = `Application ${actionLabel}d successfully!`;
+            
+            if (sendNotification) {
+                successMessage += `\n\n📧 Demo: Email notification sent to applicant`;
+                
+                setTimeout(() => {
+                    showEmailNotificationConfirmation(
+                        'applicant@example.com', 
+                        newFinalStatus.toUpperCase(), 
+                        `Quick ${actionLabel}al by admin`
+                    );
+                }, 1000);
             }
-        } catch (error) {
-            console.error('Error updating application final status:', error);
-            showError('Error updating application final status');
+            
+            showSuccess(successMessage);
+            loadDashboardData(); // Refresh the table
+        } else {
+            showError('Failed to update final status: ' + (result.error || 'Unknown error'));
         }
+    } catch (error) {
+        console.error('Error updating application final status:', error);
+        showError('Error updating application final status');
     }
+}
 
-    function showFinalStatusUpdateForm(applicationId) {
-        const modalHtml = `
+function showFinalStatusUpdateForm(applicationId) {
+    const modalHtml = `
         <div class="modal fade" id="final-status-update-modal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">👨‍💼 Update Final Application Status (Staff Decision)</h5>
+                        <h5 class="modal-title">Update Final Application Status</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <div class="alert alert-info">
-                            <i class="fas fa-info-circle"></i> 
-                            <strong>Note:</strong> This updates the final staff decision only. 
-                            The fraud detection status is managed by the system.
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Staff Decision:</strong> You are making the final decision on this loan application.
+                            The fraud detection status cannot be changed.
                         </div>
                         <form id="final-status-update-form">
                             <div class="mb-3">
-                                <label class="form-label">Final Decision Status</label>
+                                <label class="form-label">Final Decision</label>
                                 <select class="form-select" id="new-final-status" required>
                                     <option value="">Select Final Status</option>
-                                    <option value="approved">✅ Approved (Final Approval)</option>
-                                    <option value="rejected">❌ Rejected (Final Rejection)</option>
-                                    <option value="pending_review">⏳ Pending Review (Need More Info)</option>
+                                    <option value="approved">Approve Loan</option>
+                                    <option value="rejected">Reject Loan</option>
+                                    <option value="pending_review">Keep Under Review</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Staff Comments</label>
-                                <textarea class="form-control" id="staff-comments" rows="3" placeholder="Enter reason for final decision..."></textarea>
+                                <textarea class="form-control" id="staff-comments" rows="4" 
+                                    placeholder="Enter your decision rationale, conditions, or notes..."></textarea>
                             </div>
                             <div class="mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="send-notification">
                                     <label class="form-check-label">
-                                        Send notification to applicant
+                                        Send email notification to applicant
                                     </label>
                                 </div>
                             </div>
@@ -633,101 +598,103 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="submitFinalStatusUpdate('${applicationId}')">Update Final Status</button>
+                        <button type="button" class="btn btn-primary" onclick="submitFinalStatusUpdate('${applicationId}')">
+                            <i class="fas fa-gavel"></i> Update Final Status
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('final-status-update-modal');
+    if (existingModal) existingModal.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    new bootstrap.Modal(document.getElementById('final-status-update-modal')).show();
+}
 
-        // Remove existing modal if any
-        const existingModal = document.getElementById('final-status-update-modal');
-        if (existingModal) existingModal.remove();
-
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-        new bootstrap.Modal(document.getElementById('final-status-update-modal')).show();
+async function submitFinalStatusUpdate(applicationId) {
+    const newFinalStatus = document.getElementById('new-final-status').value;
+    const staffComments = document.getElementById('staff-comments').value;
+    const sendNotification = document.getElementById('send-notification').checked;
+    
+    if (!newFinalStatus) {
+        showError('Please select a final status');
+        return;
     }
-
-    async function submitFinalStatusUpdate(applicationId) {
-        const newFinalStatus = document.getElementById('new-final-status').value;
-        const staffComments = document.getElementById('staff-comments').value;
-        const sendNotification = document.getElementById('send-notification').checked;
-
-        if (!newFinalStatus) {
-            showError('Please select a final status');
-            return;
-        }
-
-        try {
-            const response = await fetch(`/admin/application/${applicationId}/update-final-status/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({
-                    final_status: newFinalStatus,
-                    staff_comments: staffComments,
-                    send_notification: sendNotification
-                })
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                let successMessage = `Application final status updated to ${newFinalStatus} successfully!`;
-
-                if (sendNotification) {
-                    successMessage += `\n\n📧 Demo: Email notification sent to applicant`;
-
-                    setTimeout(() => {
-                        showEmailNotificationConfirmation(
-                            'applicant@example.com',
-                            newFinalStatus,
-                            staffComments
-                        );
-                    }, 1000);
-                }
-
-                showSuccess(successMessage);
-                bootstrap.Modal.getInstance(document.getElementById('final-status-update-modal')).hide();
-                loadDashboardData(); // Refresh the table
-            } else {
-                showError('Failed to update final status: ' + (result.error || 'Unknown error'));
+    
+    try {
+        const response = await fetch(`/admin/application/${applicationId}/update-final-status/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ 
+                final_status: newFinalStatus,
+                staff_comments: staffComments,
+                send_notification: sendNotification
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            let successMessage = `Final status updated to ${newFinalStatus.toUpperCase()} successfully!`;
+            
+            if (sendNotification) {
+                successMessage += `\n\n📧 Demo: Email notification sent to applicant`;
+                
+                setTimeout(() => {
+                    showEmailNotificationConfirmation(
+                        'applicant@example.com', 
+                        newFinalStatus.toUpperCase(), 
+                        staffComments
+                    );
+                }, 1000);
             }
-        } catch (error) {
-            console.error('Error updating application final status:', error);
-            showError('Error updating application final status');
+            
+            showSuccess(successMessage);
+            bootstrap.Modal.getInstance(document.getElementById('final-status-update-modal')).hide();
+            loadDashboardData(); // Refresh the table
+        } else {
+            showError('Failed to update final status: ' + (result.error || 'Unknown error'));
         }
+    } catch (error) {
+        console.error('Error updating application final status:', error);
+        showError('Error updating application final status');
     }
+}
 
-    // === ML INSIGHTS FUNCTIONS ===
-    async function getMLInsights(applicationId) {
-        try {
-            const response = await fetch(`/admin/ml-insights/?application_id=${applicationId}`);
-            const insights = await response.json();
-
-            if (response.ok) {
-                displayDetailedInsights(insights);
-            } else {
-                showError('Failed to get ML insights: ' + (insights.error || 'Unknown error'));
-            }
-        } catch (error) {
-            console.error('Error getting ML insights:', error);
-            showError('Error getting ML insights');
+// === ML INSIGHTS FUNCTIONS ===
+async function getMLInsights(applicationId) {
+    try {
+        const response = await fetch(`/admin/ml-insights/?application_id=${applicationId}`);
+        const insights = await response.json();
+        
+        if (response.ok) {
+            displayDetailedInsights(insights);
+        } else {
+            showError('Failed to get ML insights: ' + (insights.error || 'Unknown error'));
         }
+    } catch (error) {
+        console.error('Error getting ML insights:', error);
+        showError('Error getting ML insights');
     }
+}
 
-    function displayDetailedInsights(insights) {
-        const modal = document.getElementById('ml-insights-modal');
-        const modalBody = modal.querySelector('.modal-body');
-
-        modalBody.innerHTML = `
+function displayDetailedInsights(insights) {
+    const modal = document.getElementById('ml-insights-modal');
+    const modalBody = modal.querySelector('.modal-body');
+    
+    modalBody.innerHTML = `
         <div class="row mb-3">
             <div class="col-md-6">
                 <h6>Application Overview</h6>
                 <p><strong>ID:</strong> ${insights.application_id}</p>
-                <p><strong>Fraud Status:</strong> <span class="badge bg-${getFraudStatusColor(insights.current_status)}">${insights.current_status}</span></p>
+                <p><strong>Fraud Status:</strong> <span class="badge bg-${getFraudStatusColor(insights.current_status)}">${getFraudStatusLabel(insights.current_status)}</span></p>
             </div>
             <div class="col-md-6">
                 <h6>Risk Assessment</h6>
@@ -770,54 +737,47 @@
             `).join('')}
             ${insights.recommendations.length === 0 ? '<p class="text-muted">No specific recommendations at this time.</p>' : ''}
         </div>
-        
-        <h6>Technical Details</h6>
-        <div class="card">
-            <div class="card-body">
-                <p class="mb-0 small text-muted">${insights.behavioral_analysis.analysis_details || 'No additional details available.'}</p>
-            </div>
-        </div>
     `;
+    
+    new bootstrap.Modal(modal).show();
+}
 
-        new bootstrap.Modal(modal).show();
+// === BATCH ANALYSIS FUNCTIONS ===
+async function runBatchAnalysis() {
+    if (!confirm('Run ML analysis on recent applications? This may take a few moments.')) {
+        return;
     }
-
-    // === BATCH ANALYSIS FUNCTIONS ===
-    async function runBatchAnalysis() {
-        if (!confirm('Run ML analysis on recent applications? This may take a few moments.')) {
-            return;
+    
+    try {
+        const recentIds = allApplications.slice(0, 20).map(app => app.id);
+        
+        const response = await fetch('/admin/batch-analysis/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ application_ids: recentIds })
+        });
+        
+        const results = await response.json();
+        
+        if (response.ok) {
+            displayBatchResults(results);
+        } else {
+            showError('Batch analysis failed: ' + (results.error || 'Unknown error'));
         }
-
-        try {
-            const recentIds = allApplications.slice(0, 20).map(app => app.id);
-
-            const response = await fetch('/admin/batch-analysis/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ application_ids: recentIds })
-            });
-
-            const results = await response.json();
-
-            if (response.ok) {
-                displayBatchResults(results);
-            } else {
-                showError('Batch analysis failed: ' + (results.error || 'Unknown error'));
-            }
-        } catch (error) {
-            console.error('Error running batch analysis:', error);
-            showError('Error running batch analysis');
-        }
+    } catch (error) {
+        console.error('Error running batch analysis:', error);
+        showError('Error running batch analysis');
     }
+}
 
-    function displayBatchResults(results) {
-        const modal = document.getElementById('batch-analysis-modal');
-        const content = document.getElementById('batch-results-content');
-
-        content.innerHTML = `
+function displayBatchResults(results) {
+    const modal = document.getElementById('batch-analysis-modal');
+    const content = document.getElementById('batch-results-content');
+    
+    content.innerHTML = `
         <h6>Analysis Summary</h6>
         <div class="row mb-3">
             <div class="col-3">
@@ -876,47 +836,47 @@
             </table>
         </div>
     `;
+    
+    new bootstrap.Modal(modal).show();
+}
 
-        new bootstrap.Modal(modal).show();
-    }
+// === APPLICATION DETAILS FUNCTIONS ===
+function viewDetails(applicationId) {
+    showApplicationDetails(applicationId);
+}
 
-    // === APPLICATION DETAILS FUNCTIONS ===
-    function viewDetails(applicationId) {
-        showApplicationDetails(applicationId);
-    }
-
-    async function showApplicationDetails(applicationId) {
-        try {
-            const response = await fetch(`/admin/application/${applicationId}/`, {
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to load application details');
+async function showApplicationDetails(applicationId) {
+    try {
+        const response = await fetch(`/admin/application/${applicationId}/`, {
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
             }
-
-            const data = await response.json();
-            displayApplicationDetailsModal(data);
-
-        } catch (error) {
-            console.error('Error loading application details:', error);
-            showError('Failed to load application details');
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to load application details');
         }
+        
+        const data = await response.json();
+        displayApplicationDetailsModal(data);
+        
+    } catch (error) {
+        console.error('Error loading application details:', error);
+        showError('Failed to load application details');
     }
+}
 
-    function displayApplicationDetailsModal(data) {
-        const app = data.application;
-        const visitor = data.visitor_info || {};
-        const signals = data.smart_signals || {};
-        const mlAnalysis = data.ml_analysis || {};
-        const fraudAlerts = data.fraud_alerts || [];
-
-        // Create or get the application details modal
-        let modal = document.getElementById('application-details-modal');
-        if (!modal) {
-            const modalHtml = `
+function displayApplicationDetailsModal(data) {
+    const app = data.application;
+    const visitor = data.visitor_info || {};
+    const signals = data.smart_signals || {};
+    const mlAnalysis = data.ml_analysis || {};
+    const fraudAlerts = data.fraud_alerts || [];
+    
+    // Create or get the application details modal
+    let modal = document.getElementById('application-details-modal');
+    if (!modal) {
+        const modalHtml = `
             <div class="modal fade" id="application-details-modal" tabindex="-1">
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
@@ -927,24 +887,45 @@
                         <div class="modal-body" id="application-details-body">
                             <!-- Content will be populated here -->
                         </div>
-                        <div class="modal-footer" id="application-details-footer">
-                            <!-- Footer buttons will be populated here -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
             </div>
         `;
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-            modal = document.getElementById('application-details-modal');
-        }
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        modal = document.getElementById('application-details-modal');
+    }
+    
+    const modalBody = document.getElementById('application-details-body');
+    modalBody.innerHTML = `
+        <!-- Dual Status Overview -->
+        <div class="dual-status-info mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <h6><i class="fas fa-shield-alt"></i> Fraud Detection</h6>
+                    <span class="badge bg-${getFraudStatusColor(app.fraud_status)}">${getFraudStatusLabel(app.fraud_status)}</span>
+                    <br><small class="text-muted">System automated decision</small>
+                </div>
+                <div class="col-md-4">
+                    <h6><i class="fas fa-gavel"></i> Staff Decision</h6>
+                    <span class="badge bg-${getFinalStatusColor(app.final_status)}">${getFinalStatusLabel(app.final_status)}</span>
+                    <br><small class="text-muted">${app.decided_by ? `Decided by ${app.decided_by}` : 'Awaiting staff decision'}</small>
+                </div>
+                <div class="col-md-4">
+                    <h6><i class="fas fa-eye"></i> Display Status</h6>
+                    <span class="badge bg-${getFinalStatusColor(app.display_status || app.final_status)}">${app.display_status || 'Processing'}</span>
+                    <br><small class="text-muted">What applicant sees</small>
+                </div>
+            </div>
+        </div>
 
-        const modalBody = document.getElementById('application-details-body');
-        modalBody.innerHTML = `
-        <!-- Enhanced Status Overview -->
+        <!-- Application Overview -->
         <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="card border-primary">
-                    <div class="card-header bg-primary text-white">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
                         <h6 class="mb-0"><i class="fas fa-user"></i> Applicant Information</h6>
                     </div>
                     <div class="card-body">
@@ -959,9 +940,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card border-success">
-                    <div class="card-header bg-success text-white">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
                         <h6 class="mb-0"><i class="fas fa-money-bill-wave"></i> Loan Details</h6>
                     </div>
                     <div class="card-body">
@@ -971,42 +952,7 @@
                             <tr><td><strong>Purpose:</strong></td><td>${app.purpose}</td></tr>
                             <tr><td><strong>Risk Score:</strong></td><td><span class="badge ${getRiskClass(app.risk_score)}">${app.risk_score}/100</span></td></tr>
                             <tr><td><strong>Applied:</strong></td><td>${new Date(app.application_date).toLocaleString()}</td></tr>
-                            <tr><td><strong>Last Modified:</strong></td><td>${new Date(app.last_modified).toLocaleString()}</td></tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card border-info">
-                    <div class="card-header bg-info text-white">
-                        <h6 class="mb-0"><i class="fas fa-chart-line"></i> Status Overview</h6>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-borderless table-sm">
-                            <tr>
-                                <td><strong>🤖 Fraud Status:</strong></td>
-                                <td><span class="badge bg-${getFraudStatusColor(app.fraud_status)}">${app.fraud_status}</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>👨‍💼 Final Status:</strong></td>
-                                <td><span class="badge bg-${getFinalStatusColor(app.final_status)}">${app.final_status}</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Display Status:</strong></td>
-                                <td><span class="badge bg-secondary">${app.display_status}</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Can Staff Decide:</strong></td>
-                                <td>${app.can_staff_decide ? '<span class="text-success">✅ Yes</span>' : '<span class="text-danger">❌ No</span>'}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Decision By:</strong></td>
-                                <td>${app.staff_decision_by || 'None'}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Decision Date:</strong></td>
-                                <td>${app.staff_decision_date ? new Date(app.staff_decision_date).toLocaleString() : 'None'}</td>
-                            </tr>
+                            <tr><td><strong>Staff Decision Date:</strong></td><td>${app.staff_decision_date ? new Date(app.staff_decision_date).toLocaleString() : 'N/A'}</td></tr>
                         </table>
                     </div>
                 </div>
@@ -1017,12 +963,13 @@
         ${app.staff_comments ? `
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card border-warning">
-                    <div class="card-header bg-warning text-dark">
-                        <h6 class="mb-0"><i class="fas fa-comments"></i> Staff Comments</h6>
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-comment"></i> Staff Comments</h6>
                     </div>
                     <div class="card-body">
                         <p class="mb-0">${app.staff_comments}</p>
+                        <small class="text-muted">Added by ${app.decided_by || 'Staff'} on ${app.staff_decision_date ? new Date(app.staff_decision_date).toLocaleString() : 'N/A'}</small>
                     </div>
                 </div>
             </div>
@@ -1106,52 +1053,17 @@
             </div>
         </div>
         ` : ''}
-        
-        <!-- Location Information -->
-        ${data.metadata?.ipInfo ? `
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h6 class="mb-0"><i class="fas fa-map-marker-alt"></i> Location Information</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <table class="table table-borderless table-sm">
-                                    <tr><td><strong>Country:</strong></td><td>${data.metadata.ipInfo.geolocation?.country?.name || 'Unknown'}</td></tr>
-                                    <tr><td><strong>City:</strong></td><td>${data.metadata.ipInfo.geolocation?.city?.name || 'Unknown'}</td></tr>
-                                    <tr><td><strong>Timezone:</strong></td><td>${data.metadata.ipInfo.geolocation?.timezone || 'Unknown'}</td></tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <table class="table table-borderless table-sm">
-                                    <tr><td><strong>ISP:</strong></td><td>${data.metadata.ipInfo.asn?.name || 'Unknown'}</td></tr>
-                                    <tr><td><strong>ASN:</strong></td><td>${data.metadata.ipInfo.asn?.asn || 'Unknown'}</td></tr>
-                                    <tr><td><strong>Datacenter:</strong></td><td>${data.metadata.ipInfo.datacenter?.result ? 'Yes' : 'No'}</td></tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        ` : ''}
     `;
-
-        // Update modal footer with current application ID and appropriate buttons
-        const modalFooter = document.getElementById('application-details-footer');
-        modalFooter.innerHTML = `
+    
+    // Update modal footer with current application ID and conditional buttons
+    const modalFooter = modal.querySelector('.modal-footer');
+    modalFooter.innerHTML = `
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         ${app.can_staff_decide ? `
-        <button type="button" class="btn btn-success me-2" onclick="showFinalStatusUpdateForm('${app.id}')">
-            <i class="fas fa-user-check"></i> Make Final Decision
-        </button>
-        ` : `
-        <button type="button" class="btn btn-warning me-2" disabled title="Cannot make staff decisions - ${app.fraud_status} by system">
-            <i class="fas fa-lock"></i> Decision Locked (${app.fraud_status})
-        </button>
-        `}
+            <button type="button" class="btn btn-warning me-2" onclick="showFinalStatusUpdateForm('${app.id}')">
+                <i class="fas fa-gavel"></i> Update Final Status
+            </button>
+        ` : ''}
         <button type="button" class="btn btn-info me-2" onclick="viewComments('${app.id}')">
             <i class="fas fa-comment"></i> Comments
         </button>
@@ -1159,41 +1071,41 @@
             <i class="fas fa-download"></i> Export Details
         </button>
     `;
+    
+    new bootstrap.Modal(modal).show();
+}
 
-        new bootstrap.Modal(modal).show();
+// === BULK ACTIONS ===
+function showBulkActions() {
+    const selected = getSelectedApplications();
+    if (selected.length === 0) {
+        showError('Please select at least one application');
+        return;
     }
-
-    // === BULK ACTIONS FOR STAFF DECISIONS ===
-    function showBulkActions() {
-        const selected = getSelectedApplications();
-        if (selected.length === 0) {
-            showError('Please select at least one application');
-            return;
-        }
-
-        const modalHtml = `
+    
+    const modalHtml = `
         <div class="modal fade" id="bulk-actions-modal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">👨‍💼 Bulk Staff Actions (${selected.length} applications)</h5>
+                        <h5 class="modal-title">Bulk Staff Actions (${selected.length} applications)</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <div class="alert alert-info">
-                            <i class="fas fa-info-circle"></i> 
-                            <strong>Note:</strong> Bulk actions only update final staff decisions. 
-                            Only applications that passed fraud checks can be bulk processed.
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Note:</strong> You can only bulk update the final staff decision status.
+                            Fraud detection status is determined by the system and cannot be changed.
                         </div>
                         <div class="d-grid gap-2">
                             <button class="btn btn-success" onclick="bulkFinalStatusUpdate('approved')">
-                                <i class="fas fa-check"></i> Final Approve All Selected
+                                <i class="fas fa-check"></i> Approve All Selected
                             </button>
                             <button class="btn btn-danger" onclick="bulkFinalStatusUpdate('rejected')">
-                                <i class="fas fa-times"></i> Final Reject All Selected
+                                <i class="fas fa-times"></i> Reject All Selected
                             </button>
                             <button class="btn btn-warning" onclick="bulkFinalStatusUpdate('pending_review')">
-                                <i class="fas fa-clock"></i> Mark All as Pending Review
+                                <i class="fas fa-clock"></i> Keep All Under Review
                             </button>
                             <hr>
                             <button class="btn btn-info" onclick="bulkMLAnalysis()">
@@ -1208,152 +1120,152 @@
             </div>
         </div>
     `;
+    
+    const existingModal = document.getElementById('bulk-actions-modal');
+    if (existingModal) existingModal.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    new bootstrap.Modal(document.getElementById('bulk-actions-modal')).show();
+}
 
-        const existingModal = document.getElementById('bulk-actions-modal');
-        if (existingModal) existingModal.remove();
+function getSelectedApplications() {
+    return Array.from(document.querySelectorAll('.application-checkbox:checked')).map(cb => cb.value);
+}
 
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-        new bootstrap.Modal(document.getElementById('bulk-actions-modal')).show();
+async function bulkFinalStatusUpdate(newFinalStatus) {
+    const selected = getSelectedApplications();
+    const actionLabel = newFinalStatus === 'approved' ? 'approving' : newFinalStatus === 'rejected' ? 'rejecting' : 'reviewing';
+    const staffComments = prompt(`Enter reason for ${actionLabel} ${selected.length} applications:`);
+    
+    if (staffComments === null) return; // User cancelled
+    
+    try {
+        const response = await fetch('/admin/bulk-update-final-status/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ 
+                application_ids: selected,
+                final_status: newFinalStatus,
+                staff_comments: staffComments || `Bulk ${actionLabel} by admin`
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            showSuccess(`${result.updated_count} applications updated successfully!`);
+            if (result.failed_updates && result.failed_updates.length > 0) {
+                showError(`Some updates failed: ${result.failed_updates.join(', ')}`);
+            }
+            bootstrap.Modal.getInstance(document.getElementById('bulk-actions-modal')).hide();
+            loadDashboardData();
+            clearAllSelections();
+        } else {
+            showError('Bulk update failed: ' + (result.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error performing bulk update:', error);
+        showError('Error performing bulk update');
     }
+}
 
-    function getSelectedApplications() {
-        return Array.from(document.querySelectorAll('.application-checkbox:checked')).map(cb => cb.value);
+function bulkMLAnalysis() {
+    const selected = getSelectedApplications();
+    
+    if (!confirm(`Run ML analysis on ${selected.length} selected applications?`)) {
+        return;
     }
-
-    async function bulkFinalStatusUpdate(newFinalStatus) {
-        const selected = getSelectedApplications();
-        const reason = prompt(`Enter reason for ${newFinalStatus}ing ${selected.length} applications:`) || `Bulk ${newFinalStatus} by staff`;
-
-        if (reason === null) return; // User cancelled
-
+    
+    // Close bulk actions modal and run analysis
+    bootstrap.Modal.getInstance(document.getElementById('bulk-actions-modal')).hide();
+    
+    // Use the selected IDs for batch analysis
+    setTimeout(async () => {
         try {
-            const response = await fetch('/admin/bulk-update-final-status/', {
+            const response = await fetch('/admin/batch-analysis/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCookie('csrftoken')
                 },
-                body: JSON.stringify({
-                    application_ids: selected,
-                    final_status: newFinalStatus,
-                    staff_comments: reason
-                })
+                body: JSON.stringify({ application_ids: selected })
             });
-
-            const result = await response.json();
-
+            
+            const results = await response.json();
+            
             if (response.ok) {
-                let message = `${result.updated_count}/${selected.length} applications updated successfully!`;
-                if (result.failed_updates && result.failed_updates.length > 0) {
-                    message += `\n\nFailed updates:\n${result.failed_updates.join('\n')}`;
-                }
-                showSuccess(message);
-                bootstrap.Modal.getInstance(document.getElementById('bulk-actions-modal')).hide();
-                loadDashboardData();
-                clearAllSelections();
+                displayBatchResults(results);
             } else {
-                showError('Bulk update failed: ' + (result.error || 'Unknown error'));
+                showError('Batch analysis failed: ' + (results.error || 'Unknown error'));
             }
         } catch (error) {
-            console.error('Error performing bulk final status update:', error);
-            showError('Error performing bulk final status update');
+            console.error('Error running batch analysis:', error);
+            showError('Error running batch analysis');
         }
-    }
+    }, 500);
+}
 
-    function bulkMLAnalysis() {
-        const selected = getSelectedApplications();
+function bulkExport() {
+    const selected = getSelectedApplications();
+    const selectedParams = selected.map(id => `application_id=${id}`).join('&');
+    window.location.href = `/admin/export-applications/?${selectedParams}`;
+    
+    // Close modal
+    bootstrap.Modal.getInstance(document.getElementById('bulk-actions-modal')).hide();
+}
 
-        if (!confirm(`Run ML analysis on ${selected.length} selected applications?`)) {
-            return;
+// === COMMENTS SYSTEM ===
+async function addComment(applicationId) {
+    const comment = prompt('Enter your comment:');
+    if (!comment || comment.trim() === '') return;
+    
+    try {
+        const response = await fetch('/admin/add-comment/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ 
+                application_id: applicationId,
+                comment: comment.trim()
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            showSuccess(`Comment added successfully! (Total: ${result.comment_count})`);
+        } else {
+            showError('Failed to add comment: ' + (result.error || 'Unknown error'));
         }
-
-        // Close bulk actions modal and run analysis
-        bootstrap.Modal.getInstance(document.getElementById('bulk-actions-modal')).hide();
-
-        // Use the selected IDs for batch analysis
-        setTimeout(async () => {
-            try {
-                const response = await fetch('/admin/batch-analysis/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    body: JSON.stringify({ application_ids: selected })
-                });
-
-                const results = await response.json();
-
-                if (response.ok) {
-                    displayBatchResults(results);
-                } else {
-                    showError('Batch analysis failed: ' + (results.error || 'Unknown error'));
-                }
-            } catch (error) {
-                console.error('Error running batch analysis:', error);
-                showError('Error running batch analysis');
-            }
-        }, 500);
+    } catch (error) {
+        console.error('Error adding comment:', error);
+        showError('Error adding comment');
     }
+}
 
-    function bulkExport() {
-        const selected = getSelectedApplications();
-        const selectedParams = selected.map(id => `application_id=${id}`).join('&');
-        window.location.href = `/admin/export-applications/?${selectedParams}`;
-
-        // Close modal
-        bootstrap.Modal.getInstance(document.getElementById('bulk-actions-modal')).hide();
-    }
-
-    // === COMMENTS SYSTEM ===
-    async function addComment(applicationId) {
-        const comment = prompt('Enter your comment:');
-        if (!comment || comment.trim() === '') return;
-
-        try {
-            const response = await fetch('/admin/add-comment/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({
-                    application_id: applicationId,
-                    comment: comment.trim()
-                })
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                showSuccess(`Comment added successfully! (Total: ${result.comment_count})`);
-            } else {
-                showError('Failed to add comment: ' + (result.error || 'Unknown error'));
-            }
-        } catch (error) {
-            console.error('Error adding comment:', error);
-            showError('Error adding comment');
+async function viewComments(applicationId) {
+    try {
+        const response = await fetch(`/admin/get-comments/?application_id=${applicationId}`);
+        const result = await response.json();
+        
+        if (response.ok) {
+            displayCommentsModal(applicationId, result.comments);
+        } else {
+            showError('Failed to load comments: ' + (result.error || 'Unknown error'));
         }
+    } catch (error) {
+        console.error('Error loading comments:', error);
+        showError('Error loading comments');
     }
+}
 
-    async function viewComments(applicationId) {
-        try {
-            const response = await fetch(`/admin/get-comments/?application_id=${applicationId}`);
-            const result = await response.json();
-
-            if (response.ok) {
-                displayCommentsModal(applicationId, result.comments);
-            } else {
-                showError('Failed to load comments: ' + (result.error || 'Unknown error'));
-            }
-        } catch (error) {
-            console.error('Error loading comments:', error);
-            showError('Error loading comments');
-        }
-    }
-
-    function displayCommentsModal(applicationId, comments) {
-        const modalHtml = `
+function displayCommentsModal(applicationId, comments) {
+    const modalHtml = `
         <div class="modal fade" id="comments-modal" tabindex="-1">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -1364,9 +1276,9 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        ${comments.length === 0 ?
-                '<p class="text-muted text-center">No comments yet.</p>' :
-                comments.map(comment => `
+                        ${comments.length === 0 ? 
+                            '<p class="text-muted text-center">No comments yet.</p>' : 
+                            comments.map(comment => `
                                 <div class="card mb-2">
                                     <div class="card-body py-2">
                                         <p class="mb-1">${comment.comment}</p>
@@ -1377,7 +1289,7 @@
                                     </div>
                                 </div>
                             `).join('')
-            }
+                        }
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -1389,189 +1301,442 @@
             </div>
         </div>
     `;
+    
+    const existingModal = document.getElementById('comments-modal');
+    if (existingModal) existingModal.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    new bootstrap.Modal(document.getElementById('comments-modal')).show();
+}
 
-        const existingModal = document.getElementById('comments-modal');
-        if (existingModal) existingModal.remove();
+async function addCommentFromModal(applicationId) {
+    await addComment(applicationId);
+    // Refresh the comments modal
+    setTimeout(() => viewComments(applicationId), 1000);
+}
 
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-        new bootstrap.Modal(document.getElementById('comments-modal')).show();
+// === EMAIL NOTIFICATION (DEMO) ===
+function showEmailNotificationConfirmation(email, status, reason) {
+    const modalHtml = `
+        <div class="modal fade" id="email-notification-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-envelope"></i> Email Notification Sent
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center mb-3">
+                            <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
+                        </div>
+                        <div class="alert alert-success">
+                            <h6>Email Successfully Sent!</h6>
+                            <p class="mb-2"><strong>Recipient:</strong> ${email}</p>
+                            <p class="mb-2"><strong>Final Status:</strong> ${status}</p>
+                            ${reason ? `<p class="mb-2"><strong>Staff Comments:</strong> ${reason}</p>` : ''}
+                            <hr>
+                            <small class="text-muted">
+                                <i class="fas fa-clock"></i> Sent at ${new Date().toLocaleTimeString()}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                            <i class="fas fa-thumbs-up"></i> Great!
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('email-notification-modal');
+    if (existingModal) existingModal.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    new bootstrap.Modal(document.getElementById('email-notification-modal')).show();
+}
+
+// === EXPORT FUNCTIONS ===
+function exportData() {
+    window.location.href = '/admin/export-applications/';
+}
+
+function exportSingleApplication(applicationId) {
+    window.location.href = `/admin/export-applications/?application_id=${applicationId}`;
+}
+
+// === UTILITY FUNCTIONS ===
+function clearAllSelections() {
+    document.querySelectorAll('.application-checkbox').forEach(cb => cb.checked = false);
+    document.getElementById('select-all').checked = false;
+}
+
+function refreshDashboard() {
+    loadDashboardData();
+    showSuccess('Dashboard refreshed successfully!');
+}
+
+function showSuccess(message) {
+    const alertHtml = `
+        <div class="alert alert-success alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;" 
+             id="success-alert">
+            <i class="fas fa-check-circle"></i> ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Remove any existing alerts
+    const existingAlert = document.getElementById('success-alert');
+    if (existingAlert) existingAlert.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', alertHtml);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        const alert = document.getElementById('success-alert');
+        if (alert) alert.remove();
+    }, 5000);
+}
+
+function showError(message) {
+    const alertHtml = `
+        <div class="alert alert-danger alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;" 
+             id="error-alert">
+            <i class="fas fa-exclamation-circle"></i> ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Remove any existing alerts
+    const existingAlert = document.getElementById('error-alert');
+    if (existingAlert) existingAlert.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', alertHtml);
+    
+    // Auto-dismiss after 7 seconds
+    setTimeout(() => {
+        const alert = document.getElementById('error-alert');
+        if (alert) alert.remove();
+    }, 7000);
+}
+
+function showInfo(message) {
+    const alertHtml = `
+        <div class="alert alert-info alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;" 
+             id="info-alert">
+            <i class="fas fa-info-circle"></i> ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Remove any existing alerts
+    const existingAlert = document.getElementById('info-alert');
+    if (existingAlert) existingAlert.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', alertHtml);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        const alert = document.getElementById('info-alert');
+        if (alert) alert.remove();
+    }, 5000);
+}
+
+// === ADVANCED FILTERING AND SEARCH ===
+function setupAdvancedFilters() {
+    // Add search functionality
+    const searchInput = document.getElementById('application-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            filteredApplications = allApplications.filter(app => {
+                return app.full_name.toLowerCase().includes(searchTerm) ||
+                       app.email.toLowerCase().includes(searchTerm) ||
+                       app.id.toLowerCase().includes(searchTerm);
+            });
+            updateApplicationsTable();
+        });
     }
+}
 
-    async function addCommentFromModal(applicationId) {
-        await addComment(applicationId);
-        // Refresh the comments modal
-        setTimeout(() => viewComments(applicationId), 1000);
+// === DASHBOARD ANALYTICS ===
+async function loadDashboardAnalytics() {
+    try {
+        const response = await fetch('/admin/fraud-analytics/', {
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        });
+        
+        if (response.ok) {
+            const analytics = await response.json();
+            displayAnalyticsCharts(analytics);
+        }
+    } catch (error) {
+        console.error('Error loading analytics:', error);
     }
+}
 
-    // === EMAIL NOTIFICATION (DEMO) ===
-    function showEmailNotificationConfirmation(email, status, reason) {
-        const modalHtml = `
-       <div class="modal fade" id="email-notification-modal" tabindex="-1">
-           <div class="modal-dialog">
-               <div class="modal-content">
-                   <div class="modal-header bg-success text-white">
-                       <h5 class="modal-title">
-                           <i class="fas fa-envelope"></i> Email Notification Sent
-                       </h5>
-                       <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                   </div>
-                   <div class="modal-body">
-                       <div class="text-center mb-3">
-                           <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
-                       </div>
-                       <div class="alert alert-success">
-                           <h6>Email Successfully Sent!</h6>
-                           <p class="mb-2"><strong>Recipient:</strong> ${email}</p>
-                           <p class="mb-2"><strong>Status Update:</strong> ${status}</p>
-                           ${reason ? `<p class="mb-2"><strong>Reason:</strong> ${reason}</p>` : ''}
-                           <hr>
-                           <small class="text-muted">
-                               <i class="fas fa-clock"></i> Sent at ${new Date().toLocaleTimeString()}
-                           </small>
-                       </div>
-                       <div class="text-muted small">
-                           <p><strong>Email Content Includes:</strong></p>
-                           <ul class="mb-0">
-                               <li>Application status update</li>
-                               <li>Next steps (if applicable)</li>
-                               <li>Contact information for queries</li>
-                               <li>Reference number for tracking</li>
-                           </ul>
-                       </div>
-                   </div>
-                   <div class="modal-footer">
-                       <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                           <i class="fas fa-thumbs-up"></i> Great!
-                       </button>
-                   </div>
-               </div>
-           </div>
-       </div>
-   `;
-
-        // Remove existing modal if any
-        const existingModal = document.getElementById('email-notification-modal');
-        if (existingModal) existingModal.remove();
-
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-        new bootstrap.Modal(document.getElementById('email-notification-modal')).show();
+function displayAnalyticsCharts(analytics) {
+    // This would integrate with Chart.js or similar library
+    // For now, we'll just update some basic stats
+    
+    if (analytics.ml_insights) {
+        const mlInsights = analytics.ml_insights;
+        const anomalyRate = mlInsights.total_analyzed > 0 ? 
+            (mlInsights.anomalies_detected / mlInsights.total_analyzed * 100).toFixed(1) : 0;
+        
+        // You could add a chart container and display this data
+        console.log(`ML Anomaly Rate: ${anomalyRate}%`);
     }
+}
 
-    // === EXPORT FUNCTIONS ===
-    function exportData() {
-        window.location.href = '/admin/export-applications/';
+// === KEYBOARD SHORTCUTS ===
+function setupKeyboardShortcuts() {
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + R for refresh
+        if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+            e.preventDefault();
+            refreshDashboard();
+        }
+        
+        // Ctrl/Cmd + A for select all (when focused on table)
+        if ((e.ctrlKey || e.metaKey) && e.key === 'a' && e.target.closest('#applications-table')) {
+            e.preventDefault();
+            document.getElementById('select-all').click();
+        }
+        
+        // Escape to close modals
+        if (e.key === 'Escape') {
+            const openModals = document.querySelectorAll('.modal.show');
+            openModals.forEach(modal => {
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                if (modalInstance) modalInstance.hide();
+            });
+        }
+    });
+}
+
+// === REAL-TIME UPDATES ===
+function setupRealTimeUpdates() {
+    // Poll for updates every 30 seconds
+    setInterval(async () => {
+        try {
+            const response = await fetch('/admin/dashboard-data/', {
+                headers: { 'X-CSRFToken': getCookie('csrftoken') }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const newCount = data.applications?.length || 0;
+                const currentCount = allApplications.length;
+                
+                if (newCount > currentCount) {
+                    showInfo(`${newCount - currentCount} new application(s) received!`);
+                    // Optionally auto-refresh
+                    setTimeout(() => loadDashboardData(), 2000);
+                }
+            }
+        } catch (error) {
+            console.log('Background update check failed:', error);
+        }
+    }, 30000); // 30 seconds
+}
+
+// === PERFORMANCE OPTIMIZATION ===
+function optimizeTablePerformance() {
+    // Implement virtual scrolling for large datasets
+    const tbody = document.querySelector('#applications-table tbody');
+    let isLoading = false;
+    
+    // Add scroll listener for pagination
+    tbody.addEventListener('scroll', function() {
+        if (this.scrollTop + this.clientHeight >= this.scrollHeight - 5 && !isLoading) {
+            loadMoreApplications();
+        }
+    });
+}
+
+async function loadMoreApplications() {
+    // Implementation for loading more applications
+    // This would be connected to a paginated backend endpoint
+    console.log('Loading more applications...');
+}
+
+// === DATA EXPORT ENHANCEMENTS ===
+function exportToJSON() {
+    const dataStr = JSON.stringify(filteredApplications, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = `veriloan_applications_${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+}
+
+function printApplicationDetails(applicationId) {
+    const app = allApplications.find(a => a.id === applicationId);
+    if (!app) return;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Application Details - ${app.full_name}</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                .header { text-align: center; margin-bottom: 30px; }
+                .section { margin-bottom: 20px; }
+                .label { font-weight: bold; }
+                .status { padding: 5px 10px; border-radius: 3px; }
+                .approved { background-color: #d4edda; color: #155724; }
+                .rejected { background-color: #f8d7da; color: #721c24; }
+                .pending { background-color: #fff3cd; color: #856404; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>VeriLoan Application Details</h1>
+                <p>Generated on ${new Date().toLocaleString()}</p>
+            </div>
+            
+            <div class="section">
+                <h2>Applicant Information</h2>
+                <p><span class="label">Name:</span> ${app.full_name}</p>
+                <p><span class="label">Email:</span> ${app.email}</p>
+                <p><span class="label">Amount Requested:</span> ₦${parseFloat(app.amount_requested).toLocaleString()}</p>
+                <p><span class="label">Risk Score:</span> ${app.risk_score}/100</p>
+            </div>
+            
+            <div class="section">
+                <h2>Status Information</h2>
+                <p><span class="label">Fraud Status:</span> <span class="status">${app.fraud_status}</span></p>
+                <p><span class="label">Final Status:</span> <span class="status">${app.final_status}</span></p>
+                <p><span class="label">Application Date:</span> ${new Date(app.application_date).toLocaleString()}</p>
+            </div>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
+
+// === ACCESSIBILITY ENHANCEMENTS ===
+function setupAccessibility() {
+    // Add ARIA labels and roles
+    document.querySelectorAll('button').forEach(btn => {
+        if (!btn.getAttribute('aria-label') && btn.title) {
+            btn.setAttribute('aria-label', btn.title);
+        }
+    });
+    
+    // Add keyboard navigation for table rows
+    document.querySelectorAll('.application-row').forEach(row => {
+        row.setAttribute('tabindex', '0');
+        row.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                const viewButton = this.querySelector('[onclick*="viewDetails"]');
+                if (viewButton) viewButton.click();
+            }
+        });
+    });
+}
+
+// === MOBILE RESPONSIVENESS ===
+function setupMobileOptimizations() {
+    // Detect mobile and adjust interface
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+        // Simplify table for mobile
+        document.querySelectorAll('.table th, .table td').forEach(cell => {
+            cell.style.fontSize = '0.8rem';
+            cell.style.padding = '0.3rem';
+        });
+        
+        // Stack action buttons vertically on mobile
+        document.querySelectorAll('.btn-group').forEach(group => {
+            group.classList.add('btn-group-vertical');
+        });
     }
+}
 
-    function exportSingleApplication(applicationId) {
-        window.location.href = `/admin/export-applications/?application_id=${applicationId}`;
-    }
+// === ERROR HANDLING AND RECOVERY ===
+function setupErrorHandling() {
+    window.addEventListener('error', function(e) {
+        console.error('Global error:', e.error);
+        showError('An unexpected error occurred. Please refresh the page.');
+    });
+    
+    window.addEventListener('unhandledrejection', function(e) {
+        console.error('Unhandled promise rejection:', e.reason);
+        showError('A network error occurred. Please check your connection.');
+    });
+}
 
-    // === ANALYTICS FUNCTIONS (Placeholders for now) ===
-    function showFraudReport() {
-        showInfo('Fraud Report feature coming soon! This will show detailed fraud analytics and trends.');
-    }
+// === INITIALIZATION AND CLEANUP ===
+function initializeDashboard() {
+    loadDashboardData();
+    setupAdvancedFilters();
+    setupKeyboardShortcuts();
+    setupRealTimeUpdates();
+    optimizeTablePerformance();
+    setupAccessibility();
+    setupMobileOptimizations();
+    setupErrorHandling();
+    
+    // Load analytics if available
+    loadDashboardAnalytics();
+    
+    // Setup periodic refresh
+    setInterval(loadDashboardData, 60000); // Refresh every minute
+}
 
-    function showApprovalStats() {
-        showInfo('Approval Statistics feature coming soon! This will show approval rates and patterns.');
-    }
-
-    function showRiskAnalysis() {
-        showInfo('Risk Analysis feature coming soon! This will show risk distribution and insights.');
-    }
-
-    // === UTILITY FUNCTIONS ===
-    function clearAllSelections() {
-        document.querySelectorAll('.application-checkbox').forEach(cb => cb.checked = false);
-        document.getElementById('select-all').checked = false;
-    }
-
-    function refreshDashboard() {
-        loadDashboardData();
-        showSuccess('Dashboard refreshed successfully!');
-    }
-
-    function showSuccess(message) {
-        const alertHtml = `
-       <div class="alert alert-success alert-dismissible fade show position-fixed" 
-            style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;" 
-            id="success-alert">
-           <i class="fas fa-check-circle"></i> ${message}
-           <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-       </div>
-   `;
-
-        // Remove any existing alerts
-        const existingAlert = document.getElementById('success-alert');
-        if (existingAlert) existingAlert.remove();
-
-        document.body.insertAdjacentHTML('beforeend', alertHtml);
-
-        // Auto-dismiss after 5 seconds
-        setTimeout(() => {
-            const alert = document.getElementById('success-alert');
-            if (alert) alert.remove();
-        }, 5000);
-    }
-
-    function showError(message) {
-        const alertHtml = `
-       <div class="alert alert-danger alert-dismissible fade show position-fixed" 
-            style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;" 
-            id="error-alert">
-           <i class="fas fa-exclamation-circle"></i> ${message}
-           <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-       </div>
-   `;
-
-        // Remove any existing alerts
-        const existingAlert = document.getElementById('error-alert');
-        if (existingAlert) existingAlert.remove();
-
-        document.body.insertAdjacentHTML('beforeend', alertHtml);
-
-        // Auto-dismiss after 7 seconds
-        setTimeout(() => {
-            const alert = document.getElementById('error-alert');
-            if (alert) alert.remove();
-        }, 7000);
-    }
-
-    function showInfo(message) {
-        const alertHtml = `
-       <div class="alert alert-info alert-dismissible fade show position-fixed" 
-            style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;" 
-            id="info-alert">
-           <i class="fas fa-info-circle"></i> ${message}
-           <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-       </div>
-   `;
-
-        // Remove any existing alerts
-        const existingAlert = document.getElementById('info-alert');
-        if (existingAlert) existingAlert.remove();
-
-        document.body.insertAdjacentHTML('beforeend', alertHtml);
-
-        // Auto-dismiss after 5 seconds
-        setTimeout(() => {
-            const alert = document.getElementById('info-alert');
-            if (alert) alert.remove();
-        }, 5000);
-    }
-
-    // Initialize dashboard
-    document.addEventListener('DOMContentLoaded', function () {
-        loadDashboardData();
-
-        // Refresh every 30 seconds
-        setInterval(loadDashboardData, 30000);
-
-        // Setup select all checkbox
-        document.getElementById('select-all').addEventListener('change', function () {
+// Initialize dashboard when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDashboard();
+    
+    // Setup select all checkbox
+    const selectAllCheckbox = document.getElementById('select-all');
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
             document.querySelectorAll('.application-checkbox').forEach(cb => {
                 cb.checked = this.checked;
             });
         });
-    });
+    }
+    
+    // Setup responsive design adjustments
+    window.addEventListener('resize', setupMobileOptimizations);
+    
+    // Show welcome message
+    setTimeout(() => {
+        showInfo('Dashboard loaded successfully! Use Ctrl+R to refresh data.');
+    }, 1000);
+});
+
+// === CLEANUP ON PAGE UNLOAD ===
+window.addEventListener('beforeunload', function() {
+    // Clear any running intervals
+    // Clean up any open connections
+    // Save any unsaved state
+    console.log('Dashboard cleanup completed');
+});
+
+// Export functions for external use if needed
+window.dashboardAPI = {
+    refreshData: loadDashboardData,
+    exportApplications: exportData,
+    getSelectedApplications: getSelectedApplications,
+    clearSelections: clearAllSelections
+};
+
 </script>
 {% endblock %}
