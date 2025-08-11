@@ -3,9 +3,12 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import pymysql
 
 # Load environment variables
 load_dotenv()
+
+pymysql.install_as_MySQLdb()
 
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
