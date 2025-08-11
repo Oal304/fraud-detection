@@ -5,6 +5,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import pymysql
 
+
 # Load environment variables
 load_dotenv()
 
@@ -27,7 +28,6 @@ ROOT_URLCONF = "fraud_prevention.urls"
 FINGERPRINTJS_PUBLIC_KEY = os.getenv('FINGERPRINTJS_PUBLIC_KEY')
 FINGERPRINTJS_SECRET_KEY = os.getenv('FINGERPRINTJS_SECRET_KEY')
 
-# Database Configuration
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -41,6 +41,7 @@ DATABASES = {
         }
     }
 }
+
 
 # Installed Apps
 INSTALLED_APPS = [
