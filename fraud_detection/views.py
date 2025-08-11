@@ -1,4 +1,5 @@
 # fraud_detection/views.py
+
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.conf import settings
@@ -91,6 +92,7 @@ def login_view(request):
 
     return render(request, 'fraud_detection/login.html', {'form': form})
 
+
 # FIXED: Proper logout view
 @login_required
 def logout_view(request):
@@ -116,40 +118,19 @@ def loan_form_home(request):
 @staff_member_required
 def dashboard_data(request):
     """
-    API endpoint to provide dashboard data - UPDATED for dual status
+    API endpoint to provide dashboard data.
     """
     try:
-        from datetime import timedelta
-        from django.utils import timezone
-        from .models import LoanApplication, FraudAlert
-        from django.db.models import Count
-        import json
-        
         # Get recent applications (last 30 days)
         recent_date = timezone.now() - timedelta(days=30)
         recent_applications = LoanApplication.objects.filter(
             application_date__gte=recent_date
         ).order_by('-application_date')
         
-        # Calculate statistics with dual status
+        # Calculate statistics
         total_applications = recent_applications.count()
-        
-        # Fraud detection statistics (backend)
-        fraud_pending = recent_applications.filter(status='pending').count()
-        fraud_approved = recent_applications.filter(status='approve').count()
-        fraud_rejected = recent_applications.filter(status='rejected').count()
-        fraud_flagged = recent_applications.filter(status='flagged').count()
-        
-        # Final approval statistics (staff)
-        final_pending = recent_applications.filter(final_status='pending_review').count()
-        final_approved = recent_applications.filter(final_status='approved').count()
-        final_rejected = recent_applications.filter(final_status='rejected').count()
-        
-        # Risk-based statistics
         high_risk_applications = recent_applications.filter(risk_score__gt=70).count()
-        
-        # Applications that can be decided by staff
-        can_staff_decide = recent_applications.filter(status__in=['approve', 'flagged']).count()
+        approved_applications = recent_applications.filter(status='approve').count()
         
         # Count anomalies from metadata
         anomalies_count = 0
@@ -178,13 +159,8 @@ def dashboard_data(request):
                 'email': app.email,
                 'amount_requested': float(app.amount_requested),
                 'risk_score': float(app.risk_score),
-                'fraud_status': app.status,  # Backend fraud detection status
-                'final_status': app.final_status,  # Staff decision status
-                'display_status': app.display_status,  # Combined status for display
-                'can_staff_decide': app.can_staff_decide,  # Whether staff can make decisions
+                'status': app.status,
                 'application_date': app.application_date.isoformat(),
-                'staff_decision_date': app.staff_decision_date.isoformat() if app.staff_decision_date else None,
-                'decided_by': app.staff_decision_by.username if app.staff_decision_by else None,
                 'ml_anomaly': ml_anomaly,
                 'behavioral_risk': behavioral_risk,
                 'visitor_id': app.visitor_id.visitor_id if app.visitor_id else None
@@ -194,18 +170,7 @@ def dashboard_data(request):
             'total': total_applications,
             'high_risk': high_risk_applications,
             'anomalies': anomalies_count,
-            'fraud_stats': {
-                'pending': fraud_pending,
-                'approved': fraud_approved,
-                'rejected': fraud_rejected,
-                'flagged': fraud_flagged
-            },
-            'final_stats': {
-                'pending_review': final_pending,
-                'approved': final_approved,
-                'rejected': final_rejected
-            },
-            'can_staff_decide': can_staff_decide
+            'approved': approved_applications
         }
         
         return JsonResponse({
@@ -294,12 +259,9 @@ def dashboard_data(request):
 @staff_member_required  
 def application_details(request, application_id):
     """
-    Get detailed information about a specific application - UPDATED for dual status
+    Get detailed information about a specific application.
     """
     try:
-        from .models import LoanApplication, FraudAlert
-        import json
-        
         application = LoanApplication.objects.get(id=application_id)
         
         # Get fraud alerts for this application
@@ -354,16 +316,10 @@ def application_details(request, application_id):
                 'amount_requested': float(application.amount_requested),
                 'repayment_duration': application.repayment_duration,
                 'purpose': application.purpose,
-                'fraud_status': application.status,  # Backend fraud status
-                'final_status': application.final_status,  # Staff decision status
-                'display_status': application.display_status,  # Combined display status
-                'can_staff_decide': application.can_staff_decide,  # Whether staff can decide
+                'status': application.status,
                 'risk_score': float(application.risk_score),
                 'application_date': application.application_date.isoformat(),
-                'last_modified': application.last_modified.isoformat(),
-                'staff_decision_date': application.staff_decision_date.isoformat() if application.staff_decision_date else None,
-                'staff_decision_by': application.staff_decision_by.username if application.staff_decision_by else None,
-                'staff_comments': application.staff_comments or ''
+                'last_modified': application.last_modified.isoformat()
             },
             'visitor_info': visitor_info,
             'smart_signals': smart_signals,
@@ -1063,6 +1019,57 @@ def fraud_analytics(request):
         logger.error(f"Error getting fraud analytics: {str(e)}")
         return JsonResponse({'error': 'Failed to get analytics data'}, status=500)
 
+@staff_member_required
+def update_application_status(request, application_id):
+    """
+    Update application status with notification support (admin action).
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+    try:
+        data = json.loads(request.body)
+        new_status = data.get('status')
+        reason = data.get('reason', '')
+        send_notification = data.get('send_notification', False)
+        
+        if new_status not in ['PENDING', 'APPROVE', 'REJECT', 'FLAGGED', 'UNDER_REVIEW']:
+            return JsonResponse({'error': 'Invalid status'}, status=400)
+        
+        application = LoanApplication.objects.get(id=application_id)
+        old_status = application.status
+        application.status = new_status
+        application.save()
+        
+        # Log the change with reason
+        logger.info(f"Application {application_id} status changed from {old_status} to {new_status} by {request.user.username if hasattr(request.user, 'username') else 'admin'}. Reason: {reason}")
+        
+        # Update related fraud alerts if needed
+        if new_status == 'APPROVE':
+            FraudAlert.objects.filter(loan_application=application).update(resolved=True)
+        
+        # In a real implementation, you would send actual email here
+        # For now, we'll just indicate if notification was requested
+        notification_sent = False
+        if send_notification:
+            # TODO: Implement actual email notification
+            # send_status_update_email(application, new_status, reason)
+            notification_sent = True
+        
+        return JsonResponse({
+            'message': 'Status updated successfully',
+            'new_status': new_status,
+            'notification_sent': notification_sent,
+            'applicant_email': application.email if send_notification else None
+        })
+        
+    except LoanApplication.DoesNotExist:
+        return JsonResponse({'error': 'Application not found'}, status=404)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        logger.error(f"Error updating application status: {str(e)}")
+        return JsonResponse({'error': 'Failed to update status'}, status=500)
 
 
 @staff_member_required
@@ -1139,8 +1146,7 @@ def export_applications(request):
     except Exception as e:
         logger.error(f"Error exporting applications: {str(e)}")
         return JsonResponse({'error': 'Failed to export data'}, status=500)
-
-
+    
 
 @staff_member_required
 def bulk_update_status(request):
@@ -1207,85 +1213,7 @@ def bulk_update_status(request):
     except Exception as e:
         logger.error(f"Error in bulk status update: {str(e)}")
         return JsonResponse({'error': 'Bulk update failed'}, status=500)
-
-@staff_member_required
-def bulk_update_final_status(request):
-    """
-    Bulk update final application statuses (staff decisions only) - UPDATED FUNCTION
-    """
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
     
-    try:
-        data = json.loads(request.body)
-        application_ids = data.get('application_ids', [])
-        new_final_status = data.get('final_status')
-        staff_comments = data.get('staff_comments', '')
-        
-        if not application_ids:
-            return JsonResponse({'error': 'No application IDs provided'}, status=400)
-        
-        # Validate final status
-        valid_final_statuses = [choice[0] for choice in LoanApplication.FINAL_STATUS_CHOICES]
-        if new_final_status not in valid_final_statuses:
-            return JsonResponse({'error': 'Invalid final status'}, status=400)
-        
-        # Limit bulk operations
-        if len(application_ids) > 100:
-            return JsonResponse({'error': 'Bulk update limited to 100 applications'}, status=400)
-        
-        updated_count = 0
-        failed_updates = []
-        
-        with transaction.atomic():
-            for app_id in application_ids:
-                try:
-                    application = LoanApplication.objects.get(id=app_id)
-                    
-                    # Check if staff can make decisions on this application
-                    if not application.can_staff_decide:
-                        failed_updates.append(
-                            f"Application {app_id}: Cannot update - {application.status} by fraud detection"
-                        )
-                        continue
-                    
-                    old_final_status = application.final_status
-                    application.final_status = new_final_status
-                    application.staff_comments = staff_comments
-                    application.staff_decision_by = request.user
-                    application.staff_decision_date = timezone.now()
-                    application.save()
-                    
-                    # Log the change
-                    logger.info(
-                        f"Bulk update: Application {app_id} final status changed from {old_final_status} "
-                        f"to {new_final_status} by {request.user.username}. Comments: {staff_comments}"
-                    )
-                    
-                    updated_count += 1
-                    
-                except LoanApplication.DoesNotExist:
-                    failed_updates.append(f"Application {app_id} not found")
-                except Exception as e:
-                    failed_updates.append(f"Failed to update {app_id}: {str(e)}")
-        
-        response_data = {
-            'message': f'Successfully updated {updated_count} applications',
-            'updated_count': updated_count,
-            'total_requested': len(application_ids)
-        }
-        
-        if failed_updates:
-            response_data['failed_updates'] = failed_updates
-        
-        return JsonResponse(response_data)
-        
-    except json.JSONDecodeError:
-        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-    except Exception as e:
-        logger.error(f"Error in bulk final status update: {str(e)}")
-        return JsonResponse({'error': 'Bulk update failed'}, status=500)
-
 @staff_member_required
 def add_application_comment(request):
     """
@@ -1370,8 +1298,8 @@ def get_application_comments(request):
     except Exception as e:
         logger.error(f"Error getting comments: {str(e)}")
         return JsonResponse({'error': 'Failed to get comments'}, status=500)
+    
 
-@staff_member_required
 def dashboard_stats_summary(request):
     """
     Get comprehensive dashboard statistics.
@@ -1452,127 +1380,4 @@ def dashboard_stats_summary(request):
     except Exception as e:
         logger.error(f"Error getting dashboard stats: {str(e)}")
         return JsonResponse({'error': 'Failed to get statistics'}, status=500)
-
-# Update your existing update_application_status view to handle notifications
-@staff_member_required
-def update_application_status(request, application_id):
-    """
-    Update application status with notification support (admin action).
-    """
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
     
-    try:
-        data = json.loads(request.body)
-        new_status = data.get('status')
-        reason = data.get('reason', '')
-        send_notification = data.get('send_notification', False)
-        
-        if new_status not in ['PENDING', 'APPROVE', 'REJECT', 'FLAGGED', 'UNDER_REVIEW']:
-            return JsonResponse({'error': 'Invalid status'}, status=400)
-        
-        application = LoanApplication.objects.get(id=application_id)
-        old_status = application.status
-        application.status = new_status
-        application.save()
-        
-        # Log the change with reason
-        logger.info(f"Application {application_id} status changed from {old_status} to {new_status} by {request.user.username if hasattr(request.user, 'username') else 'admin'}. Reason: {reason}")
-        
-        # Update related fraud alerts if needed
-        if new_status == 'APPROVE':
-            FraudAlert.objects.filter(loan_application=application).update(resolved=True)
-        
-        # In a real implementation, you would send actual email here
-        # For now, we'll just indicate if notification was requested
-        notification_sent = False
-        if send_notification:
-            # TODO: Implement actual email notification
-            # send_status_update_email(application, new_status, reason)
-            notification_sent = True
-        
-        return JsonResponse({
-            'message': 'Status updated successfully',
-            'new_status': new_status,
-            'notification_sent': notification_sent,
-            'applicant_email': application.email if send_notification else None
-        })
-        
-    except LoanApplication.DoesNotExist:
-        return JsonResponse({'error': 'Application not found'}, status=404)
-    except json.JSONDecodeError:
-        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-    except Exception as e:
-        logger.error(f"Error updating application status: {str(e)}")
-        return JsonResponse({'error': 'Failed to update status'}, status=500)
-    
-
-@staff_member_required
-def update_application_final_status(request, application_id):
-    """
-    Update FINAL application status (staff decision only) - NEW FUNCTION
-    Staff can only update final_status, not the fraud detection status
-    """
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
-    
-    try:
-        data = json.loads(request.body)
-        new_final_status = data.get('final_status')
-        staff_comments = data.get('staff_comments', '')
-        send_notification = data.get('send_notification', False)
-        
-        # Validate final status
-        valid_final_statuses = [choice[0] for choice in LoanApplication.FINAL_STATUS_CHOICES]
-        if new_final_status not in valid_final_statuses:
-            return JsonResponse({'error': 'Invalid final status'}, status=400)
-        
-        application = LoanApplication.objects.get(id=application_id)
-        
-        # Check if staff can make decisions on this application
-        if not application.can_staff_decide:
-            return JsonResponse({
-                'error': f'Cannot update final status. Application is {application.status} by fraud detection system.'
-            }, status=400)
-        
-        # Store previous status for logging
-        old_final_status = application.final_status
-        
-        # Update the application
-        application.final_status = new_final_status
-        application.staff_comments = staff_comments
-        application.staff_decision_by = request.user
-        application.staff_decision_date = timezone.now()
-        application.save()
-        
-        # Log the change
-        logger.info(
-            f"Application {application_id} final status changed from {old_final_status} to {new_final_status} "
-            f"by {request.user.username}. Comments: {staff_comments}"
-        )
-        
-        # In a real implementation, send email notification here
-        notification_sent = False
-        if send_notification:
-            # TODO: Implement actual email notification
-            # send_final_status_notification(application, new_final_status, staff_comments)
-            notification_sent = True
-        
-        return JsonResponse({
-            'message': 'Final status updated successfully',
-            'new_final_status': new_final_status,
-            'display_status': application.display_status,
-            'fraud_status': application.status,  # Show fraud status for context
-            'can_staff_decide': application.can_staff_decide,
-            'decision_date': application.staff_decision_date.isoformat() if application.staff_decision_date else None,
-            'decided_by': request.user.username,
-            'notification_sent': notification_sent
-        })
-        
-    except LoanApplication.DoesNotExist:
-        return JsonResponse({'error': 'Application not found'}, status=404)
-    except json.JSONDecodeError:
-        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-    except Exception as e:
-        logger.error(f"Error updating application final status: {str(e)}")
-        return JsonResponse({'error': 'Failed to update final status'}, status=500)

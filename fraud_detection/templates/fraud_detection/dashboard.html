@@ -7,13 +7,13 @@
 <div class="row mb-4">
     <div class="col-12">
         <h2>VeriLoan Admin Dashboard</h2>
-        <p class="text-muted">AI-Powered Fraud Detection Analytics with Dual Status System</p>
+        <p class="text-muted">AI-Powered Fraud Detection Analytics</p>
     </div>
 </div>
 
-<!-- Enhanced Stats Cards with Dual Status -->
+<!-- Stats Cards -->
 <div class="row mb-4">
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div class="card bg-primary text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
@@ -28,7 +28,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div class="card bg-danger text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
@@ -43,7 +43,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div class="card bg-warning text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
@@ -58,46 +58,16 @@
             </div>
         </div>
     </div>
-    <div class="col-md-2">
-        <div class="card bg-info text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h4 id="can-decide-count">0</h4>
-                        <p class="mb-0">Awaiting Decision</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-gavel fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div class="card bg-success text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4 id="final-approved-count">0</h4>
-                        <p class="mb-0">Finally Approved</p>
+                        <h4 id="approved-count">0</h4>
+                        <p class="mb-0">Approved</p>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-check-circle fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="card bg-secondary text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h4 id="final-rejected-count">0</h4>
-                        <p class="mb-0">Finally Rejected</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-times-circle fa-2x"></i>
                     </div>
                 </div>
             </div>
@@ -131,24 +101,16 @@
             <div class="card-body">
                 <h5>Filters</h5>
                 <div class="row">
-                    <div class="col-4">
-                        <select class="form-select" id="fraud-status-filter" onchange="filterApplications()">
-                            <option value="">All Fraud Status</option>
-                            <option value="pending">Fraud: Pending</option>
-                            <option value="approve">Fraud: Clear</option>
-                            <option value="rejected">Fraud: Rejected</option>
-                            <option value="flagged">Fraud: Flagged</option>
+                    <div class="col-6">
+                        <select class="form-select" id="status-filter" onchange="filterApplications()">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="approve">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="flagged">Flagged</option>
                         </select>
                     </div>
-                    <div class="col-4">
-                        <select class="form-select" id="final-status-filter" onchange="filterApplications()">
-                            <option value="">All Final Status</option>
-                            <option value="pending_review">Pending Review</option>
-                            <option value="approved">Finally Approved</option>
-                            <option value="rejected">Finally Rejected</option>
-                        </select>
-                    </div>
-                    <div class="col-4">
+                    <div class="col-6">
                         <select class="form-select" id="risk-filter" onchange="filterApplications()">
                             <option value="">All Risk Levels</option>
                             <option value="low">Low Risk (0-40)</option>
@@ -183,15 +145,14 @@
                         <th>Amount</th>
                         <th>Risk Score</th>
                         <th>ML Insights</th>
-                        <th>Fraud Status</th>
-                        <th>Final Status</th>
+                        <th>Status</th>
                         <th>Date</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="9" class="text-center">
+                        <td colspan="8" class="text-center">
                             <div class="spinner-border" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
@@ -274,20 +235,6 @@
 .anomaly-detected { background-color: #dc3545; }
 .anomaly-normal { background-color: #28a745; }
 
-.status-badge-container {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.dual-status-info {
-    background: linear-gradient(45deg, #f8f9fa 0%, #e9ecef 100%);
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 8px;
-    margin-bottom: 8px;
-}
-
 @media (max-width: 768px) {
     .table-responsive {
         font-size: 0.875rem;
@@ -301,7 +248,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 <script>
-// Updated Dashboard JavaScript with Dual Status System
+// Dashboard JavaScript
 let allApplications = [];
 let filteredApplications = [];
 
@@ -351,20 +298,17 @@ async function loadDashboardData() {
 }
 
 function updateStats(stats) {
-    // Updated to use dual status stats
     document.getElementById('total-applications').textContent = stats.total || 0;
     document.getElementById('high-risk-count').textContent = stats.high_risk || 0;
     document.getElementById('anomalies-count').textContent = stats.anomalies || 0;
-    document.getElementById('can-decide-count').textContent = stats.can_staff_decide || 0;
-    document.getElementById('final-approved-count').textContent = (stats.final_stats && stats.final_stats.approved) || 0;
-    document.getElementById('final-rejected-count').textContent = (stats.final_stats && stats.final_stats.rejected) || 0;
+    document.getElementById('approved-count').textContent = stats.approved || 0;
 }
 
 function updateApplicationsTable() {
     const tbody = document.querySelector('#applications-table tbody');
     
     if (filteredApplications.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="text-center">No applications found</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center">No applications found</td></tr>';
         return;
     }
     
@@ -389,17 +333,9 @@ function updateApplicationsTable() {
                 ${app.behavioral_risk || 'N/A'}
             </td>
             <td>
-                <span class="badge bg-${getFraudStatusColor(app.fraud_status)}" title="Fraud Detection Status">
-                    ${getFraudStatusLabel(app.fraud_status)}
+                <span class="badge bg-${getStatusColor(app.status)}">
+                    ${app.status}
                 </span>
-            </td>
-            <td>
-                <div class="status-badge-container">
-                    <span class="badge bg-${getFinalStatusColor(app.final_status)}" title="Staff Decision Status">
-                        ${getFinalStatusLabel(app.final_status)}
-                    </span>
-                    ${app.decided_by ? `<small class="text-muted">by ${app.decided_by}</small>` : ''}
-                </div>
             </td>
             <td><small>${new Date(app.application_date).toLocaleDateString()}</small></td>
             <td>
@@ -409,27 +345,17 @@ function updateApplicationsTable() {
                 <button class="btn btn-sm btn-primary me-1" onclick="viewDetails('${app.id}')" title="View Details">
                     <i class="fas fa-eye"></i>
                 </button>
-                
-                <!-- Staff Decision Buttons - Only show if staff can decide -->
-                ${app.can_staff_decide ? `
                 <div class="btn-group" role="group">
-                    <button class="btn btn-sm btn-success" onclick="quickFinalStatusUpdate('${app.id}', 'approved')" 
-                            title="Approve Application" ${app.final_status === 'approved' ? 'disabled' : ''}>
+                    <button class="btn btn-sm btn-success" onclick="quickStatusUpdate('${app.id}', 'APPROVE')" title="Quick Approve" ${app.status === 'APPROVE' ? 'disabled' : ''}>
                         <i class="fas fa-check"></i>
                     </button>
-                    <button class="btn btn-sm btn-danger" onclick="quickFinalStatusUpdate('${app.id}', 'rejected')" 
-                            title="Reject Application" ${app.final_status === 'rejected' ? 'disabled' : ''}>
+                    <button class="btn btn-sm btn-danger" onclick="quickStatusUpdate('${app.id}', 'REJECT')" title="Quick Reject" ${app.status === 'REJECT' ? 'disabled' : ''}>
                         <i class="fas fa-times"></i>
                     </button>
-                    <button class="btn btn-sm btn-warning" onclick="showFinalStatusUpdateForm('${app.id}')" title="Review Application">
-                        <i class="fas fa-gavel"></i>
+                    <button class="btn btn-sm btn-warning" onclick="quickStatusUpdate('${app.id}', 'FLAGGED')" title="Flag for Review" ${app.status === 'FLAGGED' ? 'disabled' : ''}>
+                        <i class="fas fa-flag"></i>
                     </button>
                 </div>
-                ` : `
-                <div class="text-muted small">
-                    ${app.fraud_status === 'rejected' ? 'Fraud Rejected' : 'Auto-processed'}
-                </div>
-                `}
             </td>
         </tr>
     `).join('');
@@ -441,9 +367,10 @@ function getRiskClass(score) {
     return 'risk-high';
 }
 
-function getFraudStatusColor(status) {
-    switch(status?.toLowerCase()) {
+function getStatusColor(status) {
+    switch(status.toLowerCase()) {
         case 'approve': return 'success';
+        case 'reject': 
         case 'rejected': return 'danger';
         case 'pending': return 'warning';
         case 'flagged': return 'info';
@@ -451,42 +378,12 @@ function getFraudStatusColor(status) {
     }
 }
 
-function getFraudStatusLabel(status) {
-    switch(status?.toLowerCase()) {
-        case 'approve': return 'Clear';
-        case 'rejected': return 'Fraud';
-        case 'pending': return 'Checking';
-        case 'flagged': return 'Flagged';
-        default: return 'Unknown';
-    }
-}
-
-function getFinalStatusColor(status) {
-    switch(status?.toLowerCase()) {
-        case 'approved': return 'success';
-        case 'rejected': return 'danger';
-        case 'pending_review': return 'warning';
-        default: return 'secondary';
-    }
-}
-
-function getFinalStatusLabel(status) {
-    switch(status?.toLowerCase()) {
-        case 'approved': return 'Approved';
-        case 'rejected': return 'Rejected';
-        case 'pending_review': return 'Pending';
-        default: return 'Unknown';
-    }
-}
-
 function filterApplications() {
-    const fraudStatusFilter = document.getElementById('fraud-status-filter').value;
-    const finalStatusFilter = document.getElementById('final-status-filter').value;
+    const statusFilter = document.getElementById('status-filter').value;
     const riskFilter = document.getElementById('risk-filter').value;
     
     filteredApplications = allApplications.filter(app => {
-        let matchesFraudStatus = !fraudStatusFilter || app.fraud_status?.toLowerCase() === fraudStatusFilter;
-        let matchesFinalStatus = !finalStatusFilter || app.final_status?.toLowerCase() === finalStatusFilter;
+        let matchesStatus = !statusFilter || app.status.toLowerCase() === statusFilter;
         let matchesRisk = true;
         
         if (riskFilter) {
@@ -498,32 +395,31 @@ function filterApplications() {
             }
         }
         
-        return matchesFraudStatus && matchesFinalStatus && matchesRisk;
+        return matchesStatus && matchesRisk;
     });
     
     updateApplicationsTable();
 }
 
-// === FINAL STATUS UPDATE FUNCTIONS (Staff decisions only) ===
-async function quickFinalStatusUpdate(applicationId, newFinalStatus) {
-    const actionLabel = newFinalStatus === 'approved' ? 'approve' : 'reject';
-    
-    if (!confirm(`Are you sure you want to ${actionLabel} this loan application?`)) {
+// === STATUS UPDATE FUNCTIONS ===
+async function quickStatusUpdate(applicationId, newStatus) {
+    if (!confirm(`Are you sure you want to ${newStatus.toLowerCase()} this application?`)) {
         return;
     }
     
-    const sendNotification = confirm(`Send email notification to the applicant about this ${actionLabel}al?`);
+    // Ask if user wants to send notification for quick actions
+    const sendNotification = confirm(`Send email notification to the applicant about this ${newStatus.toLowerCase()} decision?`);
     
     try {
-        const response = await fetch(`/admin/application/${applicationId}/update-final-status/`, {
+        const response = await fetch(`/admin/application/${applicationId}/update-status/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken')
             },
             body: JSON.stringify({ 
-                final_status: newFinalStatus,
-                staff_comments: `Quick ${actionLabel}al by admin`,
+                status: newStatus,
+                reason: `Quick ${newStatus.toLowerCase()} by admin`,
                 send_notification: sendNotification
             })
         });
@@ -531,16 +427,17 @@ async function quickFinalStatusUpdate(applicationId, newFinalStatus) {
         const result = await response.json();
         
         if (response.ok) {
-            let successMessage = `Application ${actionLabel}d successfully!`;
+            let successMessage = `Application ${newStatus.toLowerCase()}d successfully!`;
             
+            // Show email notification confirmation for quick actions
             if (sendNotification) {
                 successMessage += `\n\n📧 Demo: Email notification sent to applicant`;
                 
                 setTimeout(() => {
                     showEmailNotificationConfirmation(
-                        'applicant@example.com', 
-                        newFinalStatus.toUpperCase(), 
-                        `Quick ${actionLabel}al by admin`
+                        result.applicant_email || 'applicant@example.com', 
+                        newStatus, 
+                        `Quick ${newStatus.toLowerCase()} by admin`
                     );
                 }, 1000);
             }
@@ -548,49 +445,45 @@ async function quickFinalStatusUpdate(applicationId, newFinalStatus) {
             showSuccess(successMessage);
             loadDashboardData(); // Refresh the table
         } else {
-            showError('Failed to update final status: ' + (result.error || 'Unknown error'));
+            showError('Failed to update status: ' + (result.error || 'Unknown error'));
         }
     } catch (error) {
-        console.error('Error updating application final status:', error);
-        showError('Error updating application final status');
+        console.error('Error updating application status:', error);
+        showError('Error updating application status');
     }
 }
 
-function showFinalStatusUpdateForm(applicationId) {
+function showStatusUpdateForm(applicationId) {
     const modalHtml = `
-        <div class="modal fade" id="final-status-update-modal" tabindex="-1">
+        <div class="modal fade" id="status-update-modal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Update Final Application Status</h5>
+                        <h5 class="modal-title">Update Application Status</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>Staff Decision:</strong> You are making the final decision on this loan application.
-                            The fraud detection status cannot be changed.
-                        </div>
-                        <form id="final-status-update-form">
+                        <form id="status-update-form">
                             <div class="mb-3">
-                                <label class="form-label">Final Decision</label>
-                                <select class="form-select" id="new-final-status" required>
-                                    <option value="">Select Final Status</option>
-                                    <option value="approved">Approve Loan</option>
-                                    <option value="rejected">Reject Loan</option>
-                                    <option value="pending_review">Keep Under Review</option>
+                                <label class="form-label">New Status</label>
+                                <select class="form-select" id="new-status" required>
+                                    <option value="">Select Status</option>
+                                    <option value="PENDING">Pending Review</option>
+                                    <option value="APPROVE">Approve</option>
+                                    <option value="REJECT">Reject</option>
+                                    <option value="FLAGGED">Flag for Review</option>
+                                    <option value="UNDER_REVIEW">Under Review</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Staff Comments</label>
-                                <textarea class="form-control" id="staff-comments" rows="4" 
-                                    placeholder="Enter your decision rationale, conditions, or notes..."></textarea>
+                                <label class="form-label">Reason/Comment</label>
+                                <textarea class="form-control" id="status-reason" rows="3" placeholder="Enter reason for status change..."></textarea>
                             </div>
                             <div class="mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="send-notification">
                                     <label class="form-check-label">
-                                        Send email notification to applicant
+                                        Send notification to applicant
                                     </label>
                                 </div>
                             </div>
@@ -598,9 +491,7 @@ function showFinalStatusUpdateForm(applicationId) {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="submitFinalStatusUpdate('${applicationId}')">
-                            <i class="fas fa-gavel"></i> Update Final Status
-                        </button>
+                        <button type="button" class="btn btn-primary" onclick="submitStatusUpdate('${applicationId}')">Update Status</button>
                     </div>
                 </div>
             </div>
@@ -608,33 +499,33 @@ function showFinalStatusUpdateForm(applicationId) {
     `;
     
     // Remove existing modal if any
-    const existingModal = document.getElementById('final-status-update-modal');
+    const existingModal = document.getElementById('status-update-modal');
     if (existingModal) existingModal.remove();
     
     document.body.insertAdjacentHTML('beforeend', modalHtml);
-    new bootstrap.Modal(document.getElementById('final-status-update-modal')).show();
+    new bootstrap.Modal(document.getElementById('status-update-modal')).show();
 }
 
-async function submitFinalStatusUpdate(applicationId) {
-    const newFinalStatus = document.getElementById('new-final-status').value;
-    const staffComments = document.getElementById('staff-comments').value;
+async function submitStatusUpdate(applicationId) {
+    const newStatus = document.getElementById('new-status').value;
+    const reason = document.getElementById('status-reason').value;
     const sendNotification = document.getElementById('send-notification').checked;
     
-    if (!newFinalStatus) {
-        showError('Please select a final status');
+    if (!newStatus) {
+        showError('Please select a status');
         return;
     }
     
     try {
-        const response = await fetch(`/admin/application/${applicationId}/update-final-status/`, {
+        const response = await fetch(`/admin/application/${applicationId}/update-status/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken')
             },
             body: JSON.stringify({ 
-                final_status: newFinalStatus,
-                staff_comments: staffComments,
+                status: newStatus,
+                reason: reason,
                 send_notification: sendNotification
             })
         });
@@ -642,29 +533,30 @@ async function submitFinalStatusUpdate(applicationId) {
         const result = await response.json();
         
         if (response.ok) {
-            let successMessage = `Final status updated to ${newFinalStatus.toUpperCase()} successfully!`;
+            let successMessage = `Application status updated to ${newStatus} successfully!`;
             
+            // Show email notification confirmation (demo)
             if (sendNotification) {
                 successMessage += `\n\n📧 Demo: Email notification sent to applicant`;
                 
                 setTimeout(() => {
                     showEmailNotificationConfirmation(
-                        'applicant@example.com', 
-                        newFinalStatus.toUpperCase(), 
-                        staffComments
+                        result.applicant_email || 'applicant@example.com', 
+                        newStatus, 
+                        reason
                     );
                 }, 1000);
             }
             
             showSuccess(successMessage);
-            bootstrap.Modal.getInstance(document.getElementById('final-status-update-modal')).hide();
+            bootstrap.Modal.getInstance(document.getElementById('status-update-modal')).hide();
             loadDashboardData(); // Refresh the table
         } else {
-            showError('Failed to update final status: ' + (result.error || 'Unknown error'));
+            showError('Failed to update status: ' + (result.error || 'Unknown error'));
         }
     } catch (error) {
-        console.error('Error updating application final status:', error);
-        showError('Error updating application final status');
+        console.error('Error updating application status:', error);
+        showError('Error updating application status');
     }
 }
 
@@ -694,7 +586,7 @@ function displayDetailedInsights(insights) {
             <div class="col-md-6">
                 <h6>Application Overview</h6>
                 <p><strong>ID:</strong> ${insights.application_id}</p>
-                <p><strong>Fraud Status:</strong> <span class="badge bg-${getFraudStatusColor(insights.current_status)}">${getFraudStatusLabel(insights.current_status)}</span></p>
+                <p><strong>Status:</strong> <span class="badge bg-${getStatusColor(insights.current_status)}">${insights.current_status}</span></p>
             </div>
             <div class="col-md-6">
                 <h6>Risk Assessment</h6>
@@ -736,6 +628,13 @@ function displayDetailedInsights(insights) {
                 </div>
             `).join('')}
             ${insights.recommendations.length === 0 ? '<p class="text-muted">No specific recommendations at this time.</p>' : ''}
+        </div>
+        
+        <h6>Technical Details</h6>
+        <div class="card">
+            <div class="card-body">
+                <p class="mb-0 small text-muted">${insights.behavioral_analysis.analysis_details || 'No additional details available.'}</p>
+            </div>
         </div>
     `;
     
@@ -889,6 +788,15 @@ function displayApplicationDetailsModal(data) {
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-info me-2" onclick="showStatusUpdateForm('${app.id}')">
+                                <i class="fas fa-edit"></i> Update Status
+                            </button>
+                            <button type="button" class="btn btn-warning me-2" onclick="viewComments('${app.id}')">
+                                <i class="fas fa-comment"></i> Comments
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="exportSingleApplication('${app.id}')">
+                                <i class="fas fa-download"></i> Export Details
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -900,27 +808,6 @@ function displayApplicationDetailsModal(data) {
     
     const modalBody = document.getElementById('application-details-body');
     modalBody.innerHTML = `
-        <!-- Dual Status Overview -->
-        <div class="dual-status-info mb-4">
-            <div class="row">
-                <div class="col-md-4">
-                    <h6><i class="fas fa-shield-alt"></i> Fraud Detection</h6>
-                    <span class="badge bg-${getFraudStatusColor(app.fraud_status)}">${getFraudStatusLabel(app.fraud_status)}</span>
-                    <br><small class="text-muted">System automated decision</small>
-                </div>
-                <div class="col-md-4">
-                    <h6><i class="fas fa-gavel"></i> Staff Decision</h6>
-                    <span class="badge bg-${getFinalStatusColor(app.final_status)}">${getFinalStatusLabel(app.final_status)}</span>
-                    <br><small class="text-muted">${app.decided_by ? `Decided by ${app.decided_by}` : 'Awaiting staff decision'}</small>
-                </div>
-                <div class="col-md-4">
-                    <h6><i class="fas fa-eye"></i> Display Status</h6>
-                    <span class="badge bg-${getFinalStatusColor(app.display_status || app.final_status)}">${app.display_status || 'Processing'}</span>
-                    <br><small class="text-muted">What applicant sees</small>
-                </div>
-            </div>
-        </div>
-
         <!-- Application Overview -->
         <div class="row mb-4">
             <div class="col-md-6">
@@ -950,31 +837,14 @@ function displayApplicationDetailsModal(data) {
                             <tr><td><strong>Amount:</strong></td><td>₦${parseFloat(app.amount_requested).toLocaleString()}</td></tr>
                             <tr><td><strong>Duration:</strong></td><td>${app.repayment_duration}</td></tr>
                             <tr><td><strong>Purpose:</strong></td><td>${app.purpose}</td></tr>
+                            <tr><td><strong>Status:</strong></td><td><span class="badge bg-${getStatusColor(app.status)}">${app.status}</span></td></tr>
                             <tr><td><strong>Risk Score:</strong></td><td><span class="badge ${getRiskClass(app.risk_score)}">${app.risk_score}/100</span></td></tr>
                             <tr><td><strong>Applied:</strong></td><td>${new Date(app.application_date).toLocaleString()}</td></tr>
-                            <tr><td><strong>Staff Decision Date:</strong></td><td>${app.staff_decision_date ? new Date(app.staff_decision_date).toLocaleString() : 'N/A'}</td></tr>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Staff Comments Section -->
-        ${app.staff_comments ? `
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h6 class="mb-0"><i class="fas fa-comment"></i> Staff Comments</h6>
-                    </div>
-                    <div class="card-body">
-                        <p class="mb-0">${app.staff_comments}</p>
-                        <small class="text-muted">Added by ${app.decided_by || 'Staff'} on ${app.staff_decision_date ? new Date(app.staff_decision_date).toLocaleString() : 'N/A'}</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        ` : ''}
         
         <!-- Visitor Information -->
         <div class="row mb-4">
@@ -1053,18 +923,47 @@ function displayApplicationDetailsModal(data) {
             </div>
         </div>
         ` : ''}
+        
+        <!-- Location Information -->
+        ${data.metadata?.ipInfo ? `
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-map-marker-alt"></i> Location Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-borderless table-sm">
+                                    <tr><td><strong>Country:</strong></td><td>${data.metadata.ipInfo.geolocation?.country?.name || 'Unknown'}</td></tr>
+                                    <tr><td><strong>City:</strong></td><td>${data.metadata.ipInfo.geolocation?.city?.name || 'Unknown'}</td></tr>
+                                    <tr><td><strong>Timezone:</strong></td><td>${data.metadata.ipInfo.geolocation?.timezone || 'Unknown'}</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <table class="table table-borderless table-sm">
+                                    <tr><td><strong>ISP:</strong></td><td>${data.metadata.ipInfo.asn?.name || 'Unknown'}</td></tr>
+                                    <tr><td><strong>ASN:</strong></td><td>${data.metadata.ipInfo.asn?.asn || 'Unknown'}</td></tr>
+                                    <tr><td><strong>Datacenter:</strong></td><td>${data.metadata.ipInfo.datacenter?.result ? 'Yes' : 'No'}</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        ` : ''}
     `;
     
-    // Update modal footer with current application ID and conditional buttons
+    // Update modal footer with current application ID
     const modalFooter = modal.querySelector('.modal-footer');
     modalFooter.innerHTML = `
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        ${app.can_staff_decide ? `
-            <button type="button" class="btn btn-warning me-2" onclick="showFinalStatusUpdateForm('${app.id}')">
-                <i class="fas fa-gavel"></i> Update Final Status
-            </button>
-        ` : ''}
-        <button type="button" class="btn btn-info me-2" onclick="viewComments('${app.id}')">
+        <button type="button" class="btn btn-info me-2" onclick="showStatusUpdateForm('${app.id}')">
+            <i class="fas fa-edit"></i> Update Status
+        </button>
+        <button type="button" class="btn btn-warning me-2" onclick="viewComments('${app.id}')">
             <i class="fas fa-comment"></i> Comments
         </button>
         <button type="button" class="btn btn-primary" onclick="exportSingleApplication('${app.id}')">
@@ -1088,26 +987,20 @@ function showBulkActions() {
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Bulk Staff Actions (${selected.length} applications)</h5>
+                        <h5 class="modal-title">Bulk Actions (${selected.length} applications)</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>Note:</strong> You can only bulk update the final staff decision status.
-                            Fraud detection status is determined by the system and cannot be changed.
-                        </div>
                         <div class="d-grid gap-2">
-                            <button class="btn btn-success" onclick="bulkFinalStatusUpdate('approved')">
+                            <button class="btn btn-success" onclick="bulkStatusUpdate('APPROVE')">
                                 <i class="fas fa-check"></i> Approve All Selected
                             </button>
-                            <button class="btn btn-danger" onclick="bulkFinalStatusUpdate('rejected')">
+                            <button class="btn btn-danger" onclick="bulkStatusUpdate('REJECT')">
                                 <i class="fas fa-times"></i> Reject All Selected
                             </button>
-                            <button class="btn btn-warning" onclick="bulkFinalStatusUpdate('pending_review')">
-                                <i class="fas fa-clock"></i> Keep All Under Review
+                            <button class="btn btn-warning" onclick="bulkStatusUpdate('FLAGGED')">
+                                <i class="fas fa-flag"></i> Flag All for Review
                             </button>
-                            <hr>
                             <button class="btn btn-info" onclick="bulkMLAnalysis()">
                                 <i class="fas fa-brain"></i> Run ML Analysis on Selected
                             </button>
@@ -1132,15 +1025,14 @@ function getSelectedApplications() {
     return Array.from(document.querySelectorAll('.application-checkbox:checked')).map(cb => cb.value);
 }
 
-async function bulkFinalStatusUpdate(newFinalStatus) {
+async function bulkStatusUpdate(newStatus) {
     const selected = getSelectedApplications();
-    const actionLabel = newFinalStatus === 'approved' ? 'approving' : newFinalStatus === 'rejected' ? 'rejecting' : 'reviewing';
-    const staffComments = prompt(`Enter reason for ${actionLabel} ${selected.length} applications:`);
+    const reason = prompt(`Enter reason for ${newStatus.toLowerCase()}ing ${selected.length} applications:`);
     
-    if (staffComments === null) return; // User cancelled
+    if (reason === null) return; // User cancelled
     
     try {
-        const response = await fetch('/admin/bulk-update-final-status/', {
+        const response = await fetch('/admin/bulk-update-status/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1148,18 +1040,15 @@ async function bulkFinalStatusUpdate(newFinalStatus) {
             },
             body: JSON.stringify({ 
                 application_ids: selected,
-                final_status: newFinalStatus,
-                staff_comments: staffComments || `Bulk ${actionLabel} by admin`
+                status: newStatus,
+                reason: reason || `Bulk ${newStatus.toLowerCase()} by admin`
             })
         });
         
         const result = await response.json();
         
         if (response.ok) {
-            showSuccess(`${result.updated_count} applications updated successfully!`);
-            if (result.failed_updates && result.failed_updates.length > 0) {
-                showError(`Some updates failed: ${result.failed_updates.join(', ')}`);
-            }
+            showSuccess(`${selected.length} applications updated successfully!`);
             bootstrap.Modal.getInstance(document.getElementById('bulk-actions-modal')).hide();
             loadDashboardData();
             clearAllSelections();
@@ -1334,12 +1223,21 @@ function showEmailNotificationConfirmation(email, status, reason) {
                         <div class="alert alert-success">
                             <h6>Email Successfully Sent!</h6>
                             <p class="mb-2"><strong>Recipient:</strong> ${email}</p>
-                            <p class="mb-2"><strong>Final Status:</strong> ${status}</p>
-                            ${reason ? `<p class="mb-2"><strong>Staff Comments:</strong> ${reason}</p>` : ''}
+                            <p class="mb-2"><strong>Status Update:</strong> ${status}</p>
+                            ${reason ? `<p class="mb-2"><strong>Reason:</strong> ${reason}</p>` : ''}
                             <hr>
                             <small class="text-muted">
                                 <i class="fas fa-clock"></i> Sent at ${new Date().toLocaleTimeString()}
                             </small>
+                        </div>
+                        <div class="text-muted small">
+                            <p><strong>Email Content Includes:</strong></p>
+                            <ul class="mb-0">
+                                <li>Application status update</li>
+                                <li>Next steps (if applicable)</li>
+                                <li>Contact information for queries</li>
+                                <li>Reference number for tracking</li>
+                            </ul>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1367,6 +1265,19 @@ function exportData() {
 
 function exportSingleApplication(applicationId) {
     window.location.href = `/admin/export-applications/?application_id=${applicationId}`;
+}
+
+// === ANALYTICS FUNCTIONS (Placeholders for now) ===
+function showFraudReport() {
+    showInfo('Fraud Report feature coming soon! This will show detailed fraud analytics and trends.');
+}
+
+function showApprovalStats() {
+    showInfo('Approval Statistics feature coming soon! This will show approval rates and patterns.');
+}
+
+function showRiskAnalysis() {
+    showInfo('Risk Analysis feature coming soon! This will show risk distribution and insights.');
 }
 
 // === UTILITY FUNCTIONS ===
@@ -1449,294 +1360,19 @@ function showInfo(message) {
     }, 5000);
 }
 
-// === ADVANCED FILTERING AND SEARCH ===
-function setupAdvancedFilters() {
-    // Add search functionality
-    const searchInput = document.getElementById('application-search');
-    if (searchInput) {
-        searchInput.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            filteredApplications = allApplications.filter(app => {
-                return app.full_name.toLowerCase().includes(searchTerm) ||
-                       app.email.toLowerCase().includes(searchTerm) ||
-                       app.id.toLowerCase().includes(searchTerm);
-            });
-            updateApplicationsTable();
-        });
-    }
-}
-
-// === DASHBOARD ANALYTICS ===
-async function loadDashboardAnalytics() {
-    try {
-        const response = await fetch('/admin/fraud-analytics/', {
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        });
-        
-        if (response.ok) {
-            const analytics = await response.json();
-            displayAnalyticsCharts(analytics);
-        }
-    } catch (error) {
-        console.error('Error loading analytics:', error);
-    }
-}
-
-function displayAnalyticsCharts(analytics) {
-    // This would integrate with Chart.js or similar library
-    // For now, we'll just update some basic stats
-    
-    if (analytics.ml_insights) {
-        const mlInsights = analytics.ml_insights;
-        const anomalyRate = mlInsights.total_analyzed > 0 ? 
-            (mlInsights.anomalies_detected / mlInsights.total_analyzed * 100).toFixed(1) : 0;
-        
-        // You could add a chart container and display this data
-        console.log(`ML Anomaly Rate: ${anomalyRate}%`);
-    }
-}
-
-// === KEYBOARD SHORTCUTS ===
-function setupKeyboardShortcuts() {
-    document.addEventListener('keydown', function(e) {
-        // Ctrl/Cmd + R for refresh
-        if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-            e.preventDefault();
-            refreshDashboard();
-        }
-        
-        // Ctrl/Cmd + A for select all (when focused on table)
-        if ((e.ctrlKey || e.metaKey) && e.key === 'a' && e.target.closest('#applications-table')) {
-            e.preventDefault();
-            document.getElementById('select-all').click();
-        }
-        
-        // Escape to close modals
-        if (e.key === 'Escape') {
-            const openModals = document.querySelectorAll('.modal.show');
-            openModals.forEach(modal => {
-                const modalInstance = bootstrap.Modal.getInstance(modal);
-                if (modalInstance) modalInstance.hide();
-            });
-        }
-    });
-}
-
-// === REAL-TIME UPDATES ===
-function setupRealTimeUpdates() {
-    // Poll for updates every 30 seconds
-    setInterval(async () => {
-        try {
-            const response = await fetch('/admin/dashboard-data/', {
-                headers: { 'X-CSRFToken': getCookie('csrftoken') }
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                const newCount = data.applications?.length || 0;
-                const currentCount = allApplications.length;
-                
-                if (newCount > currentCount) {
-                    showInfo(`${newCount - currentCount} new application(s) received!`);
-                    // Optionally auto-refresh
-                    setTimeout(() => loadDashboardData(), 2000);
-                }
-            }
-        } catch (error) {
-            console.log('Background update check failed:', error);
-        }
-    }, 30000); // 30 seconds
-}
-
-// === PERFORMANCE OPTIMIZATION ===
-function optimizeTablePerformance() {
-    // Implement virtual scrolling for large datasets
-    const tbody = document.querySelector('#applications-table tbody');
-    let isLoading = false;
-    
-    // Add scroll listener for pagination
-    tbody.addEventListener('scroll', function() {
-        if (this.scrollTop + this.clientHeight >= this.scrollHeight - 5 && !isLoading) {
-            loadMoreApplications();
-        }
-    });
-}
-
-async function loadMoreApplications() {
-    // Implementation for loading more applications
-    // This would be connected to a paginated backend endpoint
-    console.log('Loading more applications...');
-}
-
-// === DATA EXPORT ENHANCEMENTS ===
-function exportToJSON() {
-    const dataStr = JSON.stringify(filteredApplications, null, 2);
-    const dataBlob = new Blob([dataStr], {type: 'application/json'});
-    
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(dataBlob);
-    link.download = `veriloan_applications_${new Date().toISOString().split('T')[0]}.json`;
-    link.click();
-}
-
-function printApplicationDetails(applicationId) {
-    const app = allApplications.find(a => a.id === applicationId);
-    if (!app) return;
-    
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>Application Details - ${app.full_name}</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 20px; }
-                .header { text-align: center; margin-bottom: 30px; }
-                .section { margin-bottom: 20px; }
-                .label { font-weight: bold; }
-                .status { padding: 5px 10px; border-radius: 3px; }
-                .approved { background-color: #d4edda; color: #155724; }
-                .rejected { background-color: #f8d7da; color: #721c24; }
-                .pending { background-color: #fff3cd; color: #856404; }
-            </style>
-        </head>
-        <body>
-            <div class="header">
-                <h1>VeriLoan Application Details</h1>
-                <p>Generated on ${new Date().toLocaleString()}</p>
-            </div>
-            
-            <div class="section">
-                <h2>Applicant Information</h2>
-                <p><span class="label">Name:</span> ${app.full_name}</p>
-                <p><span class="label">Email:</span> ${app.email}</p>
-                <p><span class="label">Amount Requested:</span> ₦${parseFloat(app.amount_requested).toLocaleString()}</p>
-                <p><span class="label">Risk Score:</span> ${app.risk_score}/100</p>
-            </div>
-            
-            <div class="section">
-                <h2>Status Information</h2>
-                <p><span class="label">Fraud Status:</span> <span class="status">${app.fraud_status}</span></p>
-                <p><span class="label">Final Status:</span> <span class="status">${app.final_status}</span></p>
-                <p><span class="label">Application Date:</span> ${new Date(app.application_date).toLocaleString()}</p>
-            </div>
-        </body>
-        </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
-}
-
-// === ACCESSIBILITY ENHANCEMENTS ===
-function setupAccessibility() {
-    // Add ARIA labels and roles
-    document.querySelectorAll('button').forEach(btn => {
-        if (!btn.getAttribute('aria-label') && btn.title) {
-            btn.setAttribute('aria-label', btn.title);
-        }
-    });
-    
-    // Add keyboard navigation for table rows
-    document.querySelectorAll('.application-row').forEach(row => {
-        row.setAttribute('tabindex', '0');
-        row.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                const viewButton = this.querySelector('[onclick*="viewDetails"]');
-                if (viewButton) viewButton.click();
-            }
-        });
-    });
-}
-
-// === MOBILE RESPONSIVENESS ===
-function setupMobileOptimizations() {
-    // Detect mobile and adjust interface
-    const isMobile = window.innerWidth <= 768;
-    
-    if (isMobile) {
-        // Simplify table for mobile
-        document.querySelectorAll('.table th, .table td').forEach(cell => {
-            cell.style.fontSize = '0.8rem';
-            cell.style.padding = '0.3rem';
-        });
-        
-        // Stack action buttons vertically on mobile
-        document.querySelectorAll('.btn-group').forEach(group => {
-            group.classList.add('btn-group-vertical');
-        });
-    }
-}
-
-// === ERROR HANDLING AND RECOVERY ===
-function setupErrorHandling() {
-    window.addEventListener('error', function(e) {
-        console.error('Global error:', e.error);
-        showError('An unexpected error occurred. Please refresh the page.');
-    });
-    
-    window.addEventListener('unhandledrejection', function(e) {
-        console.error('Unhandled promise rejection:', e.reason);
-        showError('A network error occurred. Please check your connection.');
-    });
-}
-
-// === INITIALIZATION AND CLEANUP ===
-function initializeDashboard() {
-    loadDashboardData();
-    setupAdvancedFilters();
-    setupKeyboardShortcuts();
-    setupRealTimeUpdates();
-    optimizeTablePerformance();
-    setupAccessibility();
-    setupMobileOptimizations();
-    setupErrorHandling();
-    
-    // Load analytics if available
-    loadDashboardAnalytics();
-    
-    // Setup periodic refresh
-    setInterval(loadDashboardData, 60000); // Refresh every minute
-}
-
-// Initialize dashboard when DOM is ready
+// Initialize dashboard
 document.addEventListener('DOMContentLoaded', function() {
-    initializeDashboard();
+    loadDashboardData();
+    
+    // Refresh every 30 seconds
+    setInterval(loadDashboardData, 30000);
     
     // Setup select all checkbox
-    const selectAllCheckbox = document.getElementById('select-all');
-    if (selectAllCheckbox) {
-        selectAllCheckbox.addEventListener('change', function() {
-            document.querySelectorAll('.application-checkbox').forEach(cb => {
-                cb.checked = this.checked;
-            });
+    document.getElementById('select-all').addEventListener('change', function() {
+        document.querySelectorAll('.application-checkbox').forEach(cb => {
+            cb.checked = this.checked;
         });
-    }
-    
-    // Setup responsive design adjustments
-    window.addEventListener('resize', setupMobileOptimizations);
-    
-    // Show welcome message
-    setTimeout(() => {
-        showInfo('Dashboard loaded successfully! Use Ctrl+R to refresh data.');
-    }, 1000);
+    });
 });
-
-// === CLEANUP ON PAGE UNLOAD ===
-window.addEventListener('beforeunload', function() {
-    // Clear any running intervals
-    // Clean up any open connections
-    // Save any unsaved state
-    console.log('Dashboard cleanup completed');
-});
-
-// Export functions for external use if needed
-window.dashboardAPI = {
-    refreshData: loadDashboardData,
-    exportApplications: exportData,
-    getSelectedApplications: getSelectedApplications,
-    clearSelections: clearAllSelections
-};
-
 </script>
 {% endblock %}

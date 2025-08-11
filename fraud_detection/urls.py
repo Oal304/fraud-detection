@@ -1,4 +1,4 @@
-# fraud_detection/urls.py - Updated URL configuration with dual status
+# fraud_detection/urls.py - Complete URL configuration
 from django.urls import path
 from . import views
 
@@ -23,18 +23,15 @@ urlpatterns = [
     path('admin/dashboard-data/', views.dashboard_data, name='dashboard_data'),
     path('admin/fraud-analytics/', views.fraud_analytics, name='fraud_analytics'),
     path('admin/application/<uuid:application_id>/', views.application_details, name='application_details'),
-    
-    # STATUS UPDATE ENDPOINTS - UPDATED
-    path('admin/application/<uuid:application_id>/update-status/', views.update_application_status, name='update_application_status'),  # DEPRECATED - use final-status
-    path('admin/application/<uuid:application_id>/update-final-status/', views.update_application_final_status, name='update_application_final_status'),  # NEW - staff decisions
-    path('admin/bulk-update-status/', views.bulk_update_status, name='bulk_update_status'),  # DEPRECATED - use bulk-final-status  
-    path('admin/bulk-update-final-status/', views.bulk_update_final_status, name='bulk_update_final_status'),  # NEW - staff bulk decisions
-    
+    path('admin/application/<uuid:application_id>/update-status/', views.update_application_status, name='update_application_status'),
     path('admin/export-applications/', views.export_applications, name='export_applications'),
     
     # ADMIN ML FEATURES (Protected)
     path('admin/ml-insights/', views.get_ml_insights, name='get_ml_insights'),
     path('admin/batch-analysis/', views.batch_ml_analysis, name='batch_ml_analysis'),
+
+    # ADMIN BULK OPERATIONS (Add these new ones)
+    path('admin/bulk-update-status/', views.bulk_update_status, name='bulk_update_status'),
     path('admin/add-comment/', views.add_application_comment, name='add_comment'),
     path('admin/get-comments/', views.get_application_comments, name='get_comments'),
     path('admin/stats-summary/', views.dashboard_stats_summary, name='stats_summary'),
