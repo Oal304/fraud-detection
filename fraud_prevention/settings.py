@@ -1,42 +1,31 @@
-# fraud_prevention/settings.py
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 import pymysql
+import socket
 
 # Load environment variables
 load_dotenv()
+
+# MySQL compatibility
 pymysql.install_as_MySQLdb()
 
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key secret!
+# Security
 SECRET_KEY = os.getenv("SECRET_KEY")
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG") == "False"
+# Auto-detect Railway domain if not set
+RAILWAY_PUBLIC_DOMAIN = os.getenv("RAILWAY_PUBLIC_DOMAIN", "")
+if not RAILWAY_PUBLIC_DOMAIN:
+    # Try to detect automatically in Railway
+    RAILWAY_PUBLIC_DOMAIN = os.getenv("RAILWAY_URL", "")
+    if RAILWAY_PUBLIC_DOMAIN:
+        RAILWAY_PUBLIC_DOMAIN = RAILWAY_PUBLIC_DOMAIN.replace("https://", "").replace("http://", "")
 
-# URL CONFIGURATION
-ROOT_URLCONF = "fraud_prevention.urls"
-FINGERPRINTJS_PUBLIC_KEY = os.getenv('FINGERPRINTJS_PUBLIC_KEY')
-FINGERPRINTJS_SECRET_KEY = os.getenv('FINGERPRINTJS_SECRET_KEY')
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": os.getenv("DB_PORT"),
-        "OPTIONS": {
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'"
-        }
-    }
-}
-
-# Installed Apps
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -44,16 +33,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "corsheaders",  # Add this
+    "corsheaders",
     "rest_framework",
     "fraud_detection",
     "crispy_forms",
     "crispy_bootstrap5",
 ]
 
-# MIDDLEWARE
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",  # Add this at the top
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -63,47 +51,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# CORS Configuration
-CORS_ALLOWED_ORIGINS = [
-    f"https://{os.getenv('RAILWAY_PUBLIC_DOMAIN', '')}",
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
-]
-
-# For development - remove in production
-if DEBUG:
-    CORS_ALLOW_ALL_ORIGINS = True
-else:
-    CORS_ALLOW_ALL_ORIGINS = False
-
-# Allow specific headers for FingerprintJS
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-    # Add any custom headers your fingerprint API uses
-    'fp-client-id',
-    'fp-request-id',
-]
-
-# Allow credentials if needed
-CORS_ALLOW_CREDENTIALS = True
-
-# Specific methods
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-]
+ROOT_URLCONF = "fraud_prevention.urls"
 
 TEMPLATES = [
     {
@@ -121,23 +69,76 @@ TEMPLATES = [
     },
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    f"https://{os.getenv('RAILWAY_PUBLIC_DOMAIN', '')}",
+WSGI_APPLICATION = "fraud_prevention.wsgi.application"
+
+# Database
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+        "OPTIONS": {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
+    }
+}
+
+# CORS & CSRF configuration
+CORS_ALLOWED_ORIGINS = [
+    f"https://{RAILWAY_PUBLIC_DOMAIN}",
     "http://127.0.0.1:8000",
-    "https://api.fpjs.io",  # Add FingerprintJS API domain
+    "http://localhost:8000",
+    "https://api.fpjs.io",  # FingerprintJS API
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{RAILWAY_PUBLIC_DOMAIN}",
+    "http://127.0.0.1:8000",
+]
+
+# Allow credentials if needed
+CORS_ALLOW_CREDENTIALS = True
+
+# Specific headers for FingerprintJS
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'fp-client-id',
+    'fp-request-id',
+]
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+# Hosts
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.railway.app',
-    os.getenv('RAILWAY_PUBLIC_DOMAIN', ''),
+    RAILWAY_PUBLIC_DOMAIN,
 ]
 
+# Authentication
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGIN_URL = '/login/'
 
-# STATIC & MEDIA FILES
+# Static & media files
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
@@ -147,14 +148,19 @@ STATICFILES_DIRS = [
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# Crispy forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-# ML INSIGHTS
+# FingerprintJS keys
+FINGERPRINTJS_PUBLIC_KEY = os.getenv('FINGERPRINTJS_PUBLIC_KEY')
+FINGERPRINTJS_SECRET_KEY = os.getenv('FINGERPRINTJS_SECRET_KEY')
+
+# ML analysis settings
 ML_ANALYSIS_ENABLED = os.getenv('ENABLE_ML_ANALYSIS', 'false').lower() == 'true'
 ML_BATCH_SIZE_LIMIT = int(os.getenv('ML_BATCH_SIZE_LIMIT', 50))
 
-# EMAIL CONFIGURATION (for fraud alerts)
+# Email configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
@@ -162,15 +168,12 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-# WSGI APPLICATION
-WSGI_APPLICATION = "fraud_prevention.wsgi.application"
-
-# LANGUAGE & TIMEZONE
+# Language & timezone
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# DEFAULT AUTO FIELD
+# Default auto field
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
