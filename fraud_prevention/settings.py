@@ -1,14 +1,11 @@
 # fraud_prevention/settings.py
-
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 import pymysql
 
-
 # Load environment variables
 load_dotenv()
-
 pymysql.install_as_MySQLdb()
 
 # Base directory
@@ -20,11 +17,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "False"
 
-ALLOWED_HOSTS = ["*"]  # Change this in production
-
 # URL CONFIGURATION
 ROOT_URLCONF = "fraud_prevention.urls"
-
 FINGERPRINTJS_PUBLIC_KEY = os.getenv('FINGERPRINTJS_PUBLIC_KEY')
 FINGERPRINTJS_SECRET_KEY = os.getenv('FINGERPRINTJS_SECRET_KEY')
 
@@ -42,7 +36,6 @@ DATABASES = {
     }
 }
 
-
 # Installed Apps
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -51,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",  # Add this
     "rest_framework",
     "fraud_detection",
     "crispy_forms",
@@ -59,6 +53,7 @@ INSTALLED_APPS = [
 
 # MIDDLEWARE
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",  # Add this at the top
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -68,11 +63,53 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# CORS Configuration
+CORS_ALLOWED_ORIGINS = [
+    f"https://{os.getenv('RAILWAY_PUBLIC_DOMAIN', '')}",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+]
+
+# For development - remove in production
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOW_ALL_ORIGINS = False
+
+# Allow specific headers for FingerprintJS
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    # Add any custom headers your fingerprint API uses
+    'fp-client-id',
+    'fp-request-id',
+]
+
+# Allow credentials if needed
+CORS_ALLOW_CREDENTIALS = True
+
+# Specific methods
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Directories where templates are stored
-        'APP_DIRS': True,  # Look for templates in app directories
+        'DIRS': [BASE_DIR / 'templates'],
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -87,15 +124,15 @@ TEMPLATES = [
 CSRF_TRUSTED_ORIGINS = [
     f"https://{os.getenv('RAILWAY_PUBLIC_DOMAIN', '')}",
     "http://127.0.0.1:8000",
+    "https://api.fpjs.io",  # Add FingerprintJS API domain
 ]
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.railway.app',
-    os.getenv('RAILWAY_PUBLIC_DOMAIN', ''),  
+    os.getenv('RAILWAY_PUBLIC_DOMAIN', ''),
 ]
-
 
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGIN_URL = '/login/'
@@ -110,7 +147,7 @@ STATICFILES_DIRS = [
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"  
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # ML INSIGHTS
@@ -137,5 +174,3 @@ USE_TZ = True
 
 # DEFAULT AUTO FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-
