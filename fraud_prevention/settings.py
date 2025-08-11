@@ -85,8 +85,15 @@ TEMPLATES = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://fraud-detection-production-11c8.up.railway.app",
-    "http://127.0.0.1:8000/"
+    f"https://{os.getenv('RAILWAY_PUBLIC_DOMAIN', '')}",
+    "http://127.0.0.1:8000",
+]
+
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.railway.app',
+    os.getenv('RAILWAY_PUBLIC_DOMAIN', ''),  
 ]
 
 
