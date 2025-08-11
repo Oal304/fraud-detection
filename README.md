@@ -6,7 +6,9 @@ VeriLoan is an advanced fraud detection and prevention system designed for banks
 
 The system flags suspicious applications, calculates risk scores, and provides an admin dashboard for staff review. All applications require manual staff approval, with automated recommendations based on rule-based and ML-enhanced analysis. It uses a microservices architecture built on Django, with Redis for caching and performance optimization.
 
-## Deployed Website: https://fraud-detection-production-11c8.up.railway.app/
+### Deployed Website: https://fraud-detection-production-11c8.up.railway.app/
+
+### Railway Template: https://railway.com/deploy/fraud-detection-zone
 
 Admin Credentials:
 username: admin
