@@ -322,7 +322,7 @@ function updateApplicationsTable() {
                 <strong>${app.full_name}</strong><br>
                 <small class="text-muted">${app.email}</small>
             </td>
-            <td>₦${parseFloat(app.amount_requested || 0).toLocaleString()}</td>
+            <td>$${parseFloat(app.amount_requested || 0).toLocaleString()}</td>
             <td>
                 <span class="badge risk-badge ${getRiskClass(app.risk_score)}">
                     ${app.risk_score}/100
@@ -834,7 +834,7 @@ function displayApplicationDetailsModal(data) {
                     </div>
                     <div class="card-body">
                         <table class="table table-borderless table-sm">
-                            <tr><td><strong>Amount:</strong></td><td>₦${parseFloat(app.amount_requested).toLocaleString()}</td></tr>
+                            <tr><td><strong>Amount:</strong></td><td>$${parseFloat(app.amount_requested).toLocaleString()}</td></tr>
                             <tr><td><strong>Duration:</strong></td><td>${app.repayment_duration}</td></tr>
                             <tr><td><strong>Purpose:</strong></td><td>${app.purpose}</td></tr>
                             <tr><td><strong>Status:</strong></td><td><span class="badge bg-${getStatusColor(app.status)}">${app.status}</span></td></tr>
