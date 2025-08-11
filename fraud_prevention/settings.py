@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
-    "rest_framework",
+    "rest_framework",   # ← no extra spaces/tabs before this
     "fraud_detection",
     "crispy_forms",
     "crispy_bootstrap5",
